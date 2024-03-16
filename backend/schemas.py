@@ -1,0 +1,43 @@
+from pydantic import BaseModel
+from typing import List, Optional
+from datetime import datetime
+
+# AssetIndex Models
+class AssetIndexBase(BaseModel):
+    id: str
+    asset_id: str
+    asset_type: str
+    description:str
+    location: str
+    quantity: float
+    cost_price: float
+
+
+class AssetQuantityUpdate(BaseModel):
+    quantity: float
+
+class AssetIndexCreate(AssetIndexBase):
+    pass
+
+class AssetIndex(AssetIndexBase):
+
+    class Config:
+        orm_mode = True
+
+# Transaction Models
+class TransactionBase(BaseModel):
+    transaction_id: str
+    asset_index_id: str
+    quantity: float
+    buying_date: datetime
+    buying_price: float
+
+class TransactionCreate(TransactionBase):
+    pass
+
+class Transaction(TransactionBase):
+
+
+    class Config:
+        orm_mode = True
+
