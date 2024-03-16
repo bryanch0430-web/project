@@ -7,7 +7,7 @@ import AssetForm from './AssetComponent/createNewAsset'
 import Quantity from './AssetComponent/updateQuantity';
 import Dialog from './dialog';
 import AssetsList from './AssetComponent/AssetList';
-
+import TotalValueDisplay from './AssetComponent/TotalValueDisplay';
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,9 +26,7 @@ const App: React.FC = () => {
   }, [dispatch]);
 
 
-  useEffect(() => {
-    dispatch(fetchAssets());
-  }, [assets]);
+ 
 
 
   const handleEditAsset = (asset: Asset) => {
@@ -43,6 +41,7 @@ const App: React.FC = () => {
 
   return (
     <div>
+      <TotalValueDisplay></TotalValueDisplay>
       <AssetsList assets={assets} onEdit={handleEditAsset} />
       {selectedAsset && ((
         <Dialog isOpen={isModalOpen} onClose={closeModal}>

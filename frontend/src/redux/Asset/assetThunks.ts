@@ -53,37 +53,3 @@ export const updateAsset = createAsyncThunk(
   }
 );
 
-
-export const getAllPrices = createAsyncThunk(
-  'assets/getAllPrices',
-  async (tickers, { rejectWithValue }) => {
-    try {
-      const response = await api.get('/get_current_prices/', { params: { tickers } });
-      return response.data;
-    } catch (err) {
-      let error: AxiosError = err as AxiosError;
-      if (!error.response) {
-        throw err;
-      }
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-//all_total_quantity
-
-export const getAllTotalQuantity = createAsyncThunk(
-  'assets/getAllTotalQuantity',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.get('/all_total_quantity/');
-      return response.data;
-    } catch (err) {
-      let error: AxiosError = err as AxiosError;
-      if (!error.response) {
-        throw err;
-      }
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
