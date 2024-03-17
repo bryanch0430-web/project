@@ -52,3 +52,20 @@ export const updateAsset = createAsyncThunk(
   }
 );
 
+
+
+export const getTotalPrice = createAsyncThunk(
+  'asset/totalValue',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`/get_total_value/`, _);
+      return response.data;
+    } catch (err) {
+      let error: AxiosError = err as AxiosError;
+      if (!error.response) {
+        throw err;
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);

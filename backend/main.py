@@ -166,3 +166,12 @@ async def get_current_prices(db: Session = Depends(get_db)):
         return await price.get_current_prices(db=db)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+
+@app.get("/get_total_value/")
+async def get_total_value(db: Session = Depends(get_db)):
+    try:  
+        return await price.get_total_value(db=db)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

@@ -5,6 +5,7 @@ from typing import List
 import asyncio
 import models, schemas
 from sqlalchemy.orm import Session
+import crud
 
 async def get_current_price(ticker: str):
     data = yf.Ticker(ticker).history(period='1y')
@@ -37,4 +38,23 @@ async def get_current_prices(db: Session):
             results.append(price)
         else:
             results.append(price)
-    return JSONResponse(results)
+    return results
+
+
+
+async def get_total_value(db: Session):
+    prices = await get_current_prices(db)
+    quantities = crud.get_total_quantity(db)
+    total_value = 0.0
+
+    for price in prices:
+        if 'error' not in price:
+            asset_id = price['ticker']
+            quantity = quantities.get(asset_id, 0.0)
+            total_value += quantity * price['current_price']
+
+    return total_value
+
+            
+
+    

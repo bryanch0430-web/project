@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { getAllPrices, getAllTotalQuantity } from '../redux/Price/assetPriceThrunk';
+import { getTotalPrice } from '../redux/Asset/assetThunks';
 import { calculateTotalValue, selectTotalValue } from '../redux/Price/assetPriceSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store'
 
@@ -9,9 +9,7 @@ const TotalValueDisplay: React.FC = () => {
   const totalValue = useAppSelector(selectTotalValue);
 
   useEffect(() => {
-    dispatch(getAllPrices());
-    dispatch(getAllTotalQuantity());
-    dispatch(calculateTotalValue());
+    dispatch(getTotalPrice)
   }, [dispatch]);
 
   return (
