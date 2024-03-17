@@ -8,7 +8,6 @@ export const fetchAssets = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get('/assets/'); 
-      console.log(response.data);
       return response.data;
     } catch (err) {
       let error: AxiosError = err as AxiosError; 

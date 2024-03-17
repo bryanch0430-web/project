@@ -5,9 +5,9 @@ import { AxiosError } from 'axios';
 
 export const getAllPrices = createAsyncThunk(
     'assets/getAllPrices',
-    async (tickers, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
       try {
-        const response = await api.get('/get_current_prices/', { params: { tickers } });
+        const response = await api.get('/get_current_prices/');
         console.log(response)
         return response.data;
       } catch (err) {

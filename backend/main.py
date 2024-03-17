@@ -161,8 +161,8 @@ async def get_current_price(ticker: str):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @app.get("/get_current_prices/")
-async def get_current_prices(tickers: List[str] = Query(...)):
+async def get_current_prices(db: Session = Depends(get_db)):
     try:  
-        return await price.get_current_prices(tickers)
+        return await price.get_current_prices(db=db)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
