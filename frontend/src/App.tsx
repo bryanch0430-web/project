@@ -8,6 +8,7 @@ import Quantity from './AssetComponent/updateQuantity';
 import Dialog from './dialog';
 import AssetsList from './AssetComponent/AssetList';
 import TotalValueDisplay from './AssetComponent/TotalValueDisplay';
+import './App.css'
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,10 +39,17 @@ const App: React.FC = () => {
     setModalOpen(false);
     setSelectedAsset(null);
   };
-
+  
   return (
     <div>
+      <nav className="navbar navbar-expand-lg navbar-light large-navbar bg-pantone-7453c">
+              Asset Management System 
+      </nav>
       <TotalValueDisplay></TotalValueDisplay>
+      <button onClick={openAssetForm}>Add New Asset</button>
+      {isAssetFormOpen && (
+        <AssetForm assets={assets} onClose={closeAssetForm} />
+      )}
       <AssetsList assets={assets} onEdit={handleEditAsset} />
       {selectedAsset && ((
         <Dialog isOpen={isModalOpen} onClose={closeModal}>
@@ -53,10 +61,7 @@ const App: React.FC = () => {
         </Dialog> 
       ) )}
 
-    <button onClick={openAssetForm}>Add New Asset</button>
-      {isAssetFormOpen && (
-        <AssetForm assets={assets} onClose={closeAssetForm} />
-      )}
+
     </div>
   );
 };

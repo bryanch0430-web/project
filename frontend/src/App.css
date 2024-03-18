@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+.large-navbar {
+  font-size: 1.25rem; /* Increase the font size */
+  padding: 1rem 0; /* Increase padding to make the navbar taller */
+}
+
+.bg-pantone-7453c {
+  background-color: #B1C9E8; /* This is a HEX approximation of PANTONE 7453C */
+}
