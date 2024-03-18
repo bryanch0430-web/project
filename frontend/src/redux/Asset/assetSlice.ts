@@ -1,5 +1,5 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
-import { fetchAssets, updateAsset } from './assetThunks';
+import { fetchAssets, updateAsset, deleteAsset } from './assetThunks';
 
 export interface Asset {
     id: string;
@@ -45,7 +45,12 @@ const assetSlice = createSlice({
           .addCase(updateAsset.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string;
-          });
+          })
+          .addCase(deleteAsset.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+          })
+          ;
     },
   });
 

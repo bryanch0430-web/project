@@ -5,12 +5,12 @@ import Dialog from '../dialog';
 import { useAppDispatch, useAppSelector } from '../redux/store'
 
 interface AssetFormProps {
-  assetId: string;
+  id: string;
   currentQuantity: number;
   onClose: () => void;
 }
 
-const Quantity: FC<AssetFormProps> = ({ assetId, currentQuantity, onClose }) => {
+const Quantity: FC<AssetFormProps> = ({ id, currentQuantity, onClose }) => {
   const [quantity, setQuantity] = useState(currentQuantity.toString());
   const dispatch = useAppDispatch();
 
@@ -20,7 +20,7 @@ const Quantity: FC<AssetFormProps> = ({ assetId, currentQuantity, onClose }) => 
     event.preventDefault();
     const quantityNum = parseFloat(quantity);
     if (!isNaN(quantityNum) && quantityNum >= 0) {
-      dispatch(updateAsset({ id: assetId, quantity: quantityNum }));
+      dispatch(updateAsset({ id: id, quantity: quantityNum }));
       onClose(); // Close the modal after dispatch
     } else {
       alert("Please enter a valid quantity");
@@ -29,18 +29,30 @@ const Quantity: FC<AssetFormProps> = ({ assetId, currentQuantity, onClose }) => 
 
   return (
     <Dialog isOpen={isModalOpen} onClose={onClose}>
-      <h2>Update Asset Quantity</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="quantity">Quantity:</label>
-        <input
-          type="number"
-          id="quantity"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-          min="0"
-          step="any" // Allows for floating point numbers
-        />
-        <button type="submit">Submit</button>
+      <div className="bg-pantone-7453c">
+        <nav className="navbar navbar-expand-lg navbar-light">
+          <div className="container-fluid">
+            <span className="navbar-brand mb-0 h1">Update Asset Quantity</span>
+          </div>
+        </nav>
+      </div>
+      <form onSubmit={handleSubmit} className="p-4">
+        <div className="mb-3">
+          <label htmlFor="quantity" className="form-label">Quantity:</label>
+          <input
+            type="number"
+            className="form-control"
+            id="quantity"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            min="0"
+            step="any" // Allows for floating point numbers
+          />
+        </div>
+
+        <div className="d-flex justify-content-center">
+          <button className="btn btn-primary mb-3" type="submit">Submit</button>
+        </div>
       </form>
     </Dialog>
   );

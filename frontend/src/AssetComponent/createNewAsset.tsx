@@ -11,8 +11,8 @@ interface AssetFormProps {
 }
 
 
-const AssetForm: React.FC<AssetFormProps> = ({onClose}) => {
-const dispatch = useDispatch<AppDispatch>();
+const AssetForm: React.FC<AssetFormProps> = ({ onClose }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [asset, setAsset] = useState({
     id: '',
     asset_id: '',
@@ -23,76 +23,125 @@ const dispatch = useDispatch<AppDispatch>();
     cost_price: 0
   });
 
-  const handleChange = (e:any) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setAsset(prevState => ({
       ...prevState,
       [name]: value
     }));
   };
-
-  const handleSubmit = (e:any) => {
+  const [error, setError] = useState<string>('');
+  const handleSubmit = (e: any) => {
     e.preventDefault();
+    // Check for required fields
+    if (!asset.id || !asset.asset_id || !asset.asset_type || !asset.location) {
+      setError('Please fill in all required fields.');
+      return;
+    }
     dispatch(createAssets(asset));
+    onClose();
   };
 
   const isModalOpen = true;
 
   return (
     <Dialog isOpen={isModalOpen} onClose={onClose}>
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="id"
-        value={asset.id}
-        onChange={handleChange}
-        placeholder="ID"
-      />
-      <input
-        type="text"
-        name="asset_id"
-        value={asset.asset_id}
-        onChange={handleChange}
-        placeholder="Asset ID"
-      />
-      <input
-        type="text"
-        name="asset_type"
-        value={asset.asset_type}
-        onChange={handleChange}
-        placeholder="Asset Type"
-      />
-      <input
-        type="text"
-        name="description"
-        value={asset.description}
-        onChange={handleChange}
-        placeholder="Description"
-      />
-      <input
-        type="text"
-        name="location"
-        value={asset.location}
-        onChange={handleChange}
-        placeholder="Location"
-      />
-      <input
-        type="number"
-        name="quantity"
-        value={asset.quantity}
-        onChange={handleChange}
-        placeholder="Quantity"
-      />
-      <input
-        type="number"
-        name="cost_price"
-        value={asset.cost_price}
-        onChange={handleChange}
-        placeholder="Cost Price"
-      />
-      <button type="submit">Create Asset</button>
-    </form>
-      </Dialog>
+      <div className="bg-pantone-7453c">
+        <nav className="navbar navbar-expand-lg navbar-light">
+          <div className="container-fluid">
+            <span className="navbar-brand mb-0 h1">Create Asset</span>
+          </div>
+        </nav>
+      </div>
+      <form onSubmit={handleSubmit} className="p-3">
+        {error && <div className="alert alert-danger" role="alert">{error}</div>}
+
+        <div className="mb-3">
+          <input
+            type="text"
+            name="id"
+            className="form-control"
+            value={asset.id}
+            onChange={handleChange}
+            placeholder="ID (required)"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <input
+            type="text"
+            name="asset_id"
+            className="form-control"
+            value={asset.asset_id}
+            onChange={handleChange}
+            placeholder="Asset ID (required)"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <input
+            type="text"
+            name="asset_type"
+            className="form-control"
+            value={asset.asset_type}
+            onChange={handleChange}
+            placeholder="Asset Type (required)"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <input
+            type="text"
+            name="description"
+            className="form-control"
+            value={asset.description}
+            onChange={handleChange}
+            placeholder="Description"
+          />
+        </div>
+
+        <div className="mb-3">
+          <input
+            type="text"
+            name="location"
+            className="form-control"
+            value={asset.location}
+            onChange={handleChange}
+            placeholder="Location (required)"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <input
+            type="number"
+            name="quantity"
+            className="form-control"
+            value={asset.quantity !== 0 ? asset.quantity.toString() : ''}
+            onChange={handleChange}
+            placeholder="Quantity"
+          />
+        </div>
+
+        <div className="mb-3">
+          <input
+            type="number"
+            name="cost_price"
+            className="form-control"
+            value={asset.cost_price !== 0 ? asset.cost_price.toString() : ''}
+            onChange={handleChange}
+            placeholder="Cost Price"
+          />
+        </div>
+
+        <div className="d-flex justify-content-center">
+          <button className="btn btn-primary" type="submit">Create Asset</button>
+        </div>
+      </form>
+    </Dialog>
   );
 };
 

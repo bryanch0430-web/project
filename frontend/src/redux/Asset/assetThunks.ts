@@ -69,3 +69,20 @@ export const getTotalPrice = createAsyncThunk(
     }
   }
 );
+
+
+export const deleteAsset = createAsyncThunk(
+  'assets/deleteAsset',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/assets/${id}`);
+      return response.data;
+    } catch (err) {
+      let error: AxiosError = err as AxiosError;
+      if (!error.response) {
+        throw err;
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);

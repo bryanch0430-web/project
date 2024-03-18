@@ -4,9 +4,10 @@ import { Asset } from '../redux/Asset/assetSlice';// Import the Asset type
 interface AssetsListProps {
   assets: Asset[];
   onEdit: (asset: Asset) => void;
+  onDelete: (asset: Asset) => void;
 }
 
-const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit }) => {
+const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => {
   return (
     <div className="container mt-4">
       <table className="table table-hover">
@@ -28,10 +29,16 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit }) => {
               <td>{asset.quantity}</td>
               <td>
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-primary me-2"
                   onClick={() => onEdit(asset)}
                 >
                   Update Quantity
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => onDelete(asset)}
+                >
+                  Delete Asset
                 </button>
               </td>
             </tr>

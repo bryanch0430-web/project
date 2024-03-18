@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ErrorBoundary from './error';
+import ErrorBoundary from './MainPage_component/error';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
