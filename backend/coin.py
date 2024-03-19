@@ -31,24 +31,26 @@ def df_to_windowed_df_auto_dates(dataframe, n=7):
 
     return windowed_df
 
+
+setTicker = "BTC-USD"
 # Fetch the data
-BTC_Ticker = yf.Ticker("BTC-USD")
-BTC_Data = BTC_Ticker.history(period="max")
+Ticker = yf.Ticker(setTicker)
+df = Ticker.history(period="max")
 
 
-del BTC_Data["Dividends"]
-del BTC_Data["Stock Splits"]
-BTC_Data["TomorrowClose"] = BTC_Data["Close"].shift(-1)
+del df["Dividends"]
+del df["Stock Splits"]
+df["TomorrowClose"] = df["Close"].shift(-1)
 
-BTC_Data["PriceTrend"] = (BTC_Data["TomorrowClose"]>BTC_Data["Close"]).astype(int)
-print(len(BTC_Data))
+df["PriceTrend"] = (df["TomorrowClose"]>df["Close"]).astype(int)
+print(len(df))
 
 
-window=df_to_windowed_df_auto_dates(BTC_Data,7)
+window=df_to_windowed_df_auto_dates(df,7)
 print(window)
 
 
 
-print(len(BTC_Data))
+print(len(df))
 
 print(len(window))
