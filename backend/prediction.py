@@ -12,7 +12,34 @@ from tensorflow.keras.models import Model
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
+from tcn import TCN
 
+'''def TCNTimeSeries(input_shape, num_classes):
+    inputs = Input(input_shape)
+
+    # TCN layer
+    tcn_output = TCN(nb_filters=128,
+                     kernel_size=3,
+                     nb_stacks=1,
+                     dilations=[1, 2, 4, 8, 16, 32],
+                     padding='causal',
+                     use_skip_connections=True,
+                     dropout_rate=0.0,
+                     return_sequences=False,
+                     activation='relu',
+                     kernel_initializer='he_normal',
+                     use_batch_norm=False,
+                     use_layer_norm=False,
+                     use_weight_norm=False)(inputs)
+
+    # Flatten the output or use Global Average Pooling
+    flattened = tf.keras.layers.GlobalAveragePooling1D()(tcn_output)
+
+    # Output layer for sequence classification
+    outputs = Dense(num_classes, activation='softmax')(flattened)
+
+    model = Model(inputs=[inputs], outputs=[outputs])
+    return model'''
 def UNetTimeSeries(input_shape, num_classes):
     inputs = Input(input_shape)
 
@@ -137,8 +164,6 @@ plot_distribution(y_train, 'training')
 plot_distribution(y_val, 'validation')
 plot_distribution(y_test, 'test')
 
-'''
-'''
 model = tf.keras.Sequential([
     tf.keras.layers.Input(shape=(X_train.shape[1], X_train.shape[2])),
     tf.keras.layers.LSTM(256),

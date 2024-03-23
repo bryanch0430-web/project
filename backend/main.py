@@ -175,3 +175,10 @@ async def get_total_value(db: Session = Depends(get_db)):
         return await price.get_total_value(db=db)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@app.get("/predict_AAPL/")
+def predict_AAPL_updown():
+    try:
+       return price.predict_AAPL_updown()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

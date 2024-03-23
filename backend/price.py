@@ -1,3 +1,4 @@
+import numpy as np
 import yfinance as yf
 from fastapi import  HTTPException
 from fastapi.responses import JSONResponse
@@ -6,6 +7,8 @@ import asyncio
 import models, schemas
 from sqlalchemy.orm import Session
 import crud
+import tensorflow as tf
+from datetime import datetime, timedelta
 
 async def get_current_price(ticker: str):
     data = yf.Ticker(ticker).history(period='1y')
@@ -56,5 +59,46 @@ async def get_total_value(db: Session):
     return total_value
 
             
+def reshape_input(data, time_steps):
+    X = []
 
+    for i in range(len(data) - time_steps):
+        X.append(data[i:i + time_steps])
+
+    return np.array(X)
+
+
+def predict_AAPL_updown():
+    buffer_days = 150 
+    time_steps = 100  
+    start_date = (datetime.today() - timedelta(days=time_steps + buffer_days)).strftime('%Y-%m-%d')
+    end_date = datetime.today().strftime('%Y-%m-%d')
+    ticker = yf.Ticker('AAPL')
+    df = ticker.history(start=start_date, end=end_date)
+
+    if df.empty:
+        return {"detail": "No data was retrieved from yfinance."}
     
+    df.drop(columns=["Dividends", "Stock Splits"], inplace=True)
+
+    if len(df) < time_steps:
+        return {"detail": "Not enough data to create a valid input window."}
+
+    data = df.to_numpy()
+    APPL_model = tf.keras.models.load_model('AAPLpredictionUNetTimeSeries_55%.keras')
+    data_reshaped = reshape_input(data, time_steps)
+
+    if data_reshaped.shape[0] == 0:
+        return {"detail": "No input windows could be created from the available data."}
+
+    last_window = data_reshaped[-1].reshape(1, time_steps,5)
+    prediction = APPL_model.predict(last_window)
+
+    if prediction.tolist() == [[1,0]]:
+        a = 'up'
+    else:
+        a = 'down'
+
+    return a
+
+
