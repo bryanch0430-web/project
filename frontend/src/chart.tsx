@@ -94,11 +94,11 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ ticker }) => {
     <div>
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
-      {chartData && (
-        <Line data={chartData} />
-      )}
+
     </div>
   );
 };
-
+//      {chartData && (
+//  <Line data={chartData} />
+//  )}
 export default ChartComponent;
