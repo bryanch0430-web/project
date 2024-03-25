@@ -1,7 +1,7 @@
 import  { useEffect, useState } from 'react';
 import Navbar from './nav_bar';
 import api from './api';
-import ChartComponent from './chart';
+import ChartComponent from './chart_short_term';
   
   const PredictionComponent = () => {
     const [prediction, setPrediction] = useState<String | null>(null);
@@ -24,14 +24,15 @@ import ChartComponent from './chart';
         setLoading(false);
       }
     };
-    
+    /*
     useEffect(() => {
       fetchPrediction();
-    }, []); 
+    }, []); */
     const ticker ='AAPL'
     return (
       <div>
         <Navbar></Navbar>
+        <h3 className="d-flex justify-content-center mt-3 mb-3">Short Term Closing Price Chart of {ticker}</h3>
         <ChartComponent ticker={ticker} />
         {loading && <div>Loading prediction...</div>}
         {error && <div>Error: {error}</div>}

@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import axios from 'axios';
-
-// Make sure the API import path matches your project's file structure
-// This import must also be at the top of the file.
 import api from './api';
 
 ChartJS.register(
@@ -89,15 +85,32 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ ticker }) => {
     return chartData;
   };
 
+
+
   return (
-    <div>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%', 
+    }}>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
         <p>Error: {error}</p>
       ) : (
-        chartData && <Line data={chartData} options={{ responsive: true }} />
-      )}
+        chartData && (
+          <div style={{
+            width: '1000px',
+            height: '700px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <Line data={chartData} options={{ responsive: true }} />
+          </div>
+        )
+        )}
     </div>
   );
 };

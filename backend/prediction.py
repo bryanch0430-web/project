@@ -40,6 +40,7 @@ from tcn import TCN
 
     model = Model(inputs=[inputs], outputs=[outputs])
     return model'''
+    
 def UNetTimeSeries(input_shape, num_classes):
     inputs = Input(input_shape)
 
@@ -159,24 +160,9 @@ print("Training set shape:", X_train.shape)
 print("Validation set shape:", X_val.shape)
 print("Balanced test set shape:", X_test.shape)
 
-
 plot_distribution(y_train, 'training')
 plot_distribution(y_val, 'validation')
 plot_distribution(y_test, 'test')
-
-model = tf.keras.Sequential([
-    tf.keras.layers.Input(shape=(X_train.shape[1], X_train.shape[2])),
-    tf.keras.layers.LSTM(256),
-    tf.keras.layers.Dense(256, activation='relu'),
-    tf.keras.layers.Dense(len(classes), activation='softmax')  
-])
-
-model = tf.keras.Sequential([
-    tf.keras.layers.Input(shape=(X_train.shape[1], X_train.shape[2])),
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(256, activation='relu'),
-    tf.keras.layers.Dense(256, activation='relu'),
-    tf.keras.layers.Dense(len(classes), activation='softmax')
 ])
 '''
 model = UNetTimeSeries((X_train.shape[1], X_train.shape[2]), len(classes))
