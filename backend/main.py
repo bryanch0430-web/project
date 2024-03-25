@@ -6,15 +6,12 @@ from sqlalchemy.orm import Session
 from typing import List,Annotated
 from starlette.middleware.cors import CORSMiddleware
 import crud, schemas, models, database, price
-#from crud import AssetNotFoundError
+
 
 app = FastAPI()
 
 origins = [
     "http://localhost:3000",  
-    # Include any other origins you want to allow here
-    # "https://example.com",
-    # "http://sub.example.com",
 ]
 
 app.add_middleware(
@@ -180,5 +177,14 @@ async def get_total_value(db: Session = Depends(get_db)):
 def predict_AAPL_updown(db: Session = Depends(get_db)):
     try:
        return price.predict_AAPL_updown(db=db)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    
+
+
+@app.get("/api/stock/{ticker}")
+async def get_stock_data(ticker: str):
+    try:
+       return price.get_stock_data(ticker)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

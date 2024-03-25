@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
+from typing import Dict, Any
+
 
 # AssetIndex Models
 class AssetIndexBase(BaseModel):
@@ -51,3 +53,6 @@ class PredictionCreate(PredictionBase):
 class Prediction(PredictionBase):
     class Config:
         orm_mode = True
+        
+class StockData(BaseModel):
+    data: Dict[str, Any]

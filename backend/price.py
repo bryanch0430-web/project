@@ -1,6 +1,6 @@
 import numpy as np
 import yfinance as yf
-from fastapi import  HTTPException
+from fastapi import  HTTPException, jsonify
 from fastapi.responses import JSONResponse
 from typing import List
 import asyncio
@@ -66,6 +66,15 @@ def reshape_input(data, time_steps):
 
     return np.array(X)
 
+
+
+
+async def get_stock_data(ticker: str):
+    stock = yf.Ticker(ticker)
+    hist = stock.history(period="1mo")
+    data_dict = hist.to_dict(orient="index")
+    stock_data = schemas.StockData(data=data_dict)
+    return stock_data
 
 def predict_AAPL_updown(db: Session):
     buffer_days = 150 
