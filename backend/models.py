@@ -25,7 +25,12 @@ class Transaction(Base):
     
     asset_index = relationship("AssetIndex" ,foreign_keys = asset_index_id ,back_populates="transactions")
 
-
+class Prediction(Base):
+    __tablename__ = 'prediction_result'
+    date = Column(DateTime, primary_key=True)
+    trend = Column(String)
+    
+    
 
 #Asset
 #primary_key |unique     |nullable 

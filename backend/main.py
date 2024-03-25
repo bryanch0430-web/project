@@ -19,10 +19,10 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # 允许的来源
+    allow_origins=["http://localhost:3000"], 
     allow_credentials=True,
-    allow_methods=["*"],  # 允许的方法
-    allow_headers=["*"],  # 允许的标头
+    allow_methods=["*"], 
+    allow_headers=["*"], 
 )
 
 # Dependency to get the database session.
@@ -177,8 +177,8 @@ async def get_total_value(db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @app.get("/predict_AAPL/")
-def predict_AAPL_updown():
+def predict_AAPL_updown(db: Session = Depends(get_db)):
     try:
-       return price.predict_AAPL_updown()
+       return price.predict_AAPL_updown(db=db)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

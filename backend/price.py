@@ -4,9 +4,8 @@ from fastapi import  HTTPException
 from fastapi.responses import JSONResponse
 from typing import List
 import asyncio
-import models, schemas
+import models, crud ,schemas
 from sqlalchemy.orm import Session
-import crud
 import tensorflow as tf
 from datetime import datetime, timedelta
 
@@ -68,7 +67,7 @@ def reshape_input(data, time_steps):
     return np.array(X)
 
 
-def predict_AAPL_updown():
+def predict_AAPL_updown(db: Session):
     buffer_days = 150 
     time_steps = 100  
     start_date = (datetime.today() - timedelta(days=time_steps + buffer_days)).strftime('%Y-%m-%d')
@@ -97,8 +96,13 @@ def predict_AAPL_updown():
     if prediction.tolist() == [[1,0]]:
         a = 'up'
     else:
-        a = 'down'
-
+        a = 'down'  
+    
+    today = datetime.today()
+    existing_prediction = db.query(models.Prediction).filter(models.Prediction.date == today).first()
+    if not existing_prediction:
+        prediction_data = schemas.PredictionCreate(date=today, trend=a)
+        crud.create_prediction(db,prediction_data)
     return a
 
 

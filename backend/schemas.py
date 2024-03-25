@@ -36,8 +36,18 @@ class TransactionCreate(TransactionBase):
     pass
 
 class Transaction(TransactionBase):
-
-
     class Config:
         orm_mode = True
 
+
+#Prediction result storing
+class PredictionBase(BaseModel):
+    date:datetime
+    trend: str
+    
+class PredictionCreate(PredictionBase):
+    pass
+
+class Prediction(PredictionBase):
+    class Config:
+        orm_mode = True

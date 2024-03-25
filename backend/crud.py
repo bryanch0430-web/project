@@ -87,3 +87,16 @@ def delete_transaction(db: Session, transaction_id: str):
 
 def get_all_transaction(db: Session):
     return db.query(models.Transaction).all()
+
+
+
+
+def create_prediction(db: Session, prediction: schemas.PredictionCreate):
+    db_prediction = models.Prediction(**prediction.dict())
+    db.add(db_prediction)
+    db.commit()
+    db.refresh(db_prediction)
+    return db_prediction
+
+def get_all_prediction(db: Session):
+    return db.query(models.Prediction).all()
