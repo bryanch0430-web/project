@@ -182,9 +182,9 @@ def predict_AAPL_updown(db: Session = Depends(get_db)):
     
 
 
-@app.get("/api/stock/{ticker}")
-async def get_stock_data(ticker: str):
+@app.get("/ticker_data/{ticker}")
+async def get_ticker_data(ticker: str):
     try:
-       return price.get_stock_data(ticker)
+       return await price.get_ticker_data(ticker)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

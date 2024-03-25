@@ -54,5 +54,5 @@ class Prediction(PredictionBase):
     class Config:
         orm_mode = True
         
-class StockData(BaseModel):
-    data: Dict[str, Any]
+class TickerData(BaseModel):
+    data: dict

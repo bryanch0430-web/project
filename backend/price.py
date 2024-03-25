@@ -1,6 +1,6 @@
 import numpy as np
 import yfinance as yf
-from fastapi import  HTTPException, jsonify
+from fastapi import  HTTPException
 from fastapi.responses import JSONResponse
 from typing import List
 import asyncio
@@ -8,6 +8,7 @@ import models, crud ,schemas
 from sqlalchemy.orm import Session
 import tensorflow as tf
 from datetime import datetime, timedelta
+from fastapi.concurrency import run_in_threadpool
 
 async def get_current_price(ticker: str):
     data = yf.Ticker(ticker).history(period='1y')
@@ -68,13 +69,13 @@ def reshape_input(data, time_steps):
 
 
 
-
-async def get_stock_data(ticker: str):
-    stock = yf.Ticker(ticker)
-    hist = stock.history(period="1mo")
+async def get_ticker_data(ticker: str):
+    stock = await run_in_threadpool(lambda: yf.Ticker(ticker))
+    hist = await run_in_threadpool(lambda: stock.history(period="1mo"))
     data_dict = hist.to_dict(orient="index")
-    stock_data = schemas.StockData(data=data_dict)
-    return stock_data
+
+    return schemas.TickerData(data=data_dict)
+
 
 def predict_AAPL_updown(db: Session):
     buffer_days = 150 
@@ -112,6 +113,7 @@ def predict_AAPL_updown(db: Session):
     if not existing_prediction:
         prediction_data = schemas.PredictionCreate(date=today, trend=a)
         crud.create_prediction(db,prediction_data)
+            
     return a
 
 

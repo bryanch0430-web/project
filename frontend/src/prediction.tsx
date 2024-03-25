@@ -1,36 +1,53 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {useAppDispatch} from './redux/store'
-import { startPrediction } from './redux/Prediction/predictionThrunk';
+import  { useEffect, useState } from 'react';
 import Navbar from './nav_bar';
-const PredictionComponent = () => {
-  const dispatch = useAppDispatch();
-  const prediction = useSelector((state: any) => state.predictions.prediction);
-  const predictionStatus = useSelector((state: any) => state.predictions.status);
-  const predictionError = useSelector((state: any) => state.predictions.error);
-
-  const handlePredictClick = () => {
-    dispatch(startPrediction());
-  };
-
-  return (
-    <div>
-        <Navbar/>
-      <button onClick={handlePredictClick} disabled={predictionStatus === 'loading'}>
-        Predict AAPL Trend
-      </button>
-
-      {predictionStatus === 'loading' && <div>Loading prediction...</div>}
-
-      {predictionStatus === 'failed' && <div>Error: {predictionError}</div>}
-
-      {predictionStatus === 'succeeded' && prediction && (
-        <div>
-          Prediction: {prediction.trend}
+import api from './api';
+import ChartComponent from './chart';
+  
+  const PredictionComponent = () => {
+    const [prediction, setPrediction] = useState<String | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+  
+    const fetchPrediction = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await api.get('/predict_AAPL/');
+        setPrediction(response.data);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unexpected error occurred');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    useEffect(() => {
+      fetchPrediction();
+    }, []); 
+    const ticker ='AAPL'
+    return (
+      <div>
+        <Navbar></Navbar>
+        <ChartComponent ticker={ticker} />
+        {loading && <div>Loading prediction...</div>}
+        {error && <div>Error: {error}</div>}
+        {prediction && (
+          <div className="d-flex justify-content-center mt-3 mb-3">
+            <div>Prediction Trend: {prediction}</div>
+          </div>
+        )}
+        <div className="d-flex justify-content-center mt-3 mb-3">
+            <button className="btn btn-outline-secondary my-3" onClick={fetchPrediction} disabled={loading}>
+            Predict Trend
+            </button>
         </div>
-      )}
-    </div>
-  );
-};
 
-export default PredictionComponent;
+      </div>
+    );
+  };
+  
+  export default PredictionComponent;
