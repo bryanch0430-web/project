@@ -7,7 +7,8 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ErrorBoundary from './MainPage_component/error';
-
+import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
+import PredictionComponent from './prediction'
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -15,7 +16,12 @@ root.render(
   <ErrorBoundary>
   <Provider store ={store}>
   <React.StrictMode>
-    <App />
+    <Router>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/predict-aapl" element={<PredictionComponent />} />
+      </Routes>
+    </Router>
   </React.StrictMode>
   </Provider>
   </ErrorBoundary>
