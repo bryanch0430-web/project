@@ -20,14 +20,21 @@ interface ChartData {
   }>;
 }
 
-// Define the expected structure of the stock data response
-interface DataResponse {
-  [date: string]: {
-    close: number;
-    // ...other properties if available
-  };
-}
+type Record = {
+  Open: number;
+  High: number;
+  Low: number;
+  Close: number;
+  Volume: number;
+  Dividends: number;
+  Stock_Splits: number;
+};
 
+type DataResponse = {
+  data: {
+    [key: string]: Record;
+  };
+};
 const ChartComponent: React.FC<ChartComponentProps> = ({ ticker }) => {
   const [chartData, setChartData] = useState<ChartData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -55,30 +62,43 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ ticker }) => {
     fetchTickerData();
   }, [ticker]);
 
-  const formatChartData = (data: DataResponse): ChartData => {
-    return {
-      labels: Object.keys(data).map((date) => new Date(date).toLocaleDateString()),
+  const formatChartData = (dataResponse: DataResponse) => {
+    // Extract dates and sort them to ensure the chart follows the chronological order
+    const dates = Object.keys(dataResponse.data).sort();
+  
+    // Map the sorted dates to their respective 'Close' values
+    const closePrices = dates.map(date => {
+      const record = dataResponse.data[date];
+      // TypeScript knows that `record` is of type StockRecord or undefined
+      return record ? record.Close : null;
+    }).filter((price): price is number => price !== null); // Type guard to remove nulls
+  
+    // Create the dataset for the Line component
+    const chartData = {
+      labels: dates,
       datasets: [
         {
-          label: `Price of ${ticker}`,
-          data: Object.values(data).map((val) => val.close),
+          label: 'Close Price',
+          data: closePrices,
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1,
-        },
-      ],
+          tension: 0.1
+        }
+      ]
     };
-  };
   
+    return chartData;
+  };
+
   return (
     <div>
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
-
+      {chartData && (
+        <Line data={chartData} />
+      )}
     </div>
   );
 };
-//      {chartData && (
-//  <Line data={chartData} />
-//  )}
+
 export default ChartComponent;
