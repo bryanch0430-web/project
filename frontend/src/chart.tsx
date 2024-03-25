@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import axios from 'axios';
+
+// Make sure the API import path matches your project's file structure
+// This import must also be at the top of the file.
 import api from './api';
 
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 interface ChartComponentProps {
   ticker: string;
 }
 
-// Define the structure for the chart data
 interface ChartData {
   labels: string[];
   datasets: Array<{
@@ -35,9 +47,10 @@ type DataResponse = {
     [key: string]: Record;
   };
 };
+
 const ChartComponent: React.FC<ChartComponentProps> = ({ ticker }) => {
   const [chartData, setChartData] = useState<ChartData | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
@@ -45,15 +58,9 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ ticker }) => {
       setLoading(true);
       try {
         const response = await api.get<DataResponse>(`/ticker_data/${ticker}`);
-        console.log((response.data));
         setChartData(formatChartData(response.data));
-      } catch (err) {
-        const error = err as Error;
-        if (axios.isAxiosError(error)) {
-          setError(error.message);
-        } else {
-          setError('Error fetching data');
-        }
+      } catch (error) {
+        setError('Failed to fetch chart data');
       } finally {
         setLoading(false);
       }
@@ -62,19 +69,11 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ ticker }) => {
     fetchTickerData();
   }, [ticker]);
 
-  const formatChartData = (dataResponse: DataResponse) => {
-    // Extract dates and sort them to ensure the chart follows the chronological order
+  const formatChartData = (dataResponse: DataResponse): ChartData => {
     const dates = Object.keys(dataResponse.data).sort();
-  
-    // Map the sorted dates to their respective 'Close' values
-    const closePrices = dates.map(date => {
-      const record = dataResponse.data[date];
-      // TypeScript knows that `record` is of type StockRecord or undefined
-      return record ? record.Close : null;
-    }).filter((price): price is number => price !== null); // Type guard to remove nulls
-  
-    // Create the dataset for the Line component
-    const chartData = {
+    const closePrices = dates.map(date => dataResponse.data[date].Close);
+
+    const chartData: ChartData = {
       labels: dates,
       datasets: [
         {
@@ -82,23 +81,25 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ ticker }) => {
           data: closePrices,
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
-        }
-      ]
+          tension: 0.1,
+        },
+      ],
     };
-  
+
     return chartData;
   };
 
   return (
     <div>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
-
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>Error: {error}</p>
+      ) : (
+        chartData && <Line data={chartData} options={{ responsive: true }} />
+      )}
     </div>
   );
 };
-//      {chartData && (
-//  <Line data={chartData} />
-//  )}
-export default ChartComponent;
+
+export default ChartComponent;  
