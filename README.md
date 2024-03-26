@@ -37,9 +37,9 @@ A step by step series of examples that tell you how to get a development environ
    pip install -r requirements.txt
     ```
 6. Install PostgreSQL
-  ```bash
-  set the password to A7589#aaa and DataBase name = App
-   ```
+  
+  - set the password to A7589#aaa and DataBase name = App
+
 ## Usage
 
 How to run the project:
