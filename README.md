@@ -37,26 +37,26 @@ A step by step series of examples that tell you how to get a development environ
    pip install -r requirements.txt
     ```
 6. Install PostgreSQL
-     ```sh
+7. 
   set the password to A7589#aaa
-    ```
+
 ## Usage
 
 How to run the project:
 
 1. Navigate to the backend directory:
-      ```sh
+   ```sh
     cd backend 
     ```
 2. Start backend
-         ```sh
+   ```sh
     uvicorn main:app 
     ```
 3. Navigate to the fronted directory:
-      ```sh
+   ```sh
     cd fronend 
     ```
 4. Start frontend
-         ```sh
+   ```sh
     yarn start 
     ```
