@@ -19,24 +19,19 @@ A step by step series of examples that tell you how to get a development environ
     ```sh
     git clone https://github.com/bryanch0430-web/project.git
     ```
-2. Navigate to the frontend directory:
-    ```sh
-    cd frontend 
-    ```
-3. Install project dependencies:
-    ```sh
-    yarn install
-    ```
-4. Navigate to the backend directory:
-      ```sh
-    cd backend 
-    ```
-
-5. Install project dependencies:
+2. Install project dependencies:
     ```sh
    pip install -r requirements.txt
     ```
-6. Install PostgreSQL
+3. Navigate to the frontend directory:
+    ```sh
+    cd frontend 
+    ```
+4. Install project dependencies:
+    ```sh
+    yarn install
+    ```
+5. Install PostgreSQL
   
   - set the password to A7589#aaa and DataBase name = App
 
