@@ -10,14 +10,14 @@ What things you need to install the software and how to install them:
 - Node.js
 - A modern web browser
 
-- 
+  
 ### Installation
 
 A step by step series of examples that tell you how to get a development environment running:
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/simpleproject.git
+    git clone https://github.com/bryanch0430-web/project.git
     ```
 2. Navigate to the frontend directory:
     ```sh
