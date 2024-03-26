@@ -56,3 +56,6 @@ class Prediction(PredictionBase):
         
 class TickerData(BaseModel):
     data: dict
+
+class AssetDistribution(BaseModel):
+    asset_distribution: dict

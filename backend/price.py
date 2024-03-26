@@ -58,6 +58,37 @@ async def get_total_value(db: Session):
 
     return total_value
 
+
+async def get_asset_distribution(db: Session):
+    try:
+        prices = await get_current_prices(db)
+        assets =  crud.get_all_assets(db)
+        total_value = 0.0
+        type_values = {}
+
+        for asset in assets:
+            price = next((price['current_price'] for price in prices if price['ticker'] == asset.asset_id), None)
+            if price is None:
+                continue
+
+            value = asset.quantity * price
+            total_value += value
+
+            if asset.asset_type in type_values:
+                type_values[asset.asset_type] += value
+            else:
+                type_values[asset.asset_type] = value
+
+        distribution = {}
+        if total_value > 0:
+            for asset_type, value in type_values.items():
+                distribution[asset_type] = value / total_value
+
+        # Assuming AssetDistribution is correctly a Pydantic model
+        return schemas.AssetDistribution(asset_distribution=distribution)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
             
 def reshape_input(data, time_steps):
     X = []

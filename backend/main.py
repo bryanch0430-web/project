@@ -188,3 +188,11 @@ async def get_ticker_data(ticker: str):
        return await price.get_ticker_data(ticker)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    
+@app.get("/asset_distribution_in_price/")
+async def get_asset_distribution_in_price(db: Session = Depends(get_db)):
+    try:
+        return await price.get_asset_distribution(db=db)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    

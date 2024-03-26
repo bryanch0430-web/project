@@ -1,4 +1,4 @@
-#Asset management & simple prediction
+#Asset management & Simple prediction
 
 ### Prerequisites
 
