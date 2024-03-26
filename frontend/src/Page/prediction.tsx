@@ -1,7 +1,7 @@
 import  { useEffect, useState } from 'react';
-import Navbar from './nav_bar';
-import api from './api';
-import ChartComponent from './chart_short_term';
+import Navbar from '../tools/nav_bar';
+import api from '../api';
+import ChartComponent from '../tools/chart_short_term';
   
   const PredictionComponent = () => {
     const [prediction, setPrediction] = useState<String | null>(null);

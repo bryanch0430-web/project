@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { createAssets } from '../redux/Asset/assetThunks';
 import { Asset } from '../redux/Asset/assetSlice';
 import { RootState, AppDispatch } from '../redux/store';
-import Dialog from '../dialog';
+import Dialog from '../tools/dialog';
 
 interface AssetFormProps {
   assets: Asset[];

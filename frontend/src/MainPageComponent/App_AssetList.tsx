@@ -5,10 +5,10 @@ import { fetchAssets } from '../redux/Asset/assetThunks';
 import { Asset } from '../redux/Asset/assetSlice';
 import AssetForm from '../AssetComponent/createNewAsset'
 import Quantity from '../AssetComponent/updateQuantity';
-import Dialog from '../dialog';
+import Dialog from '../tools/dialog';
 import AssetsList from '../AssetComponent/AssetList';
 import DeleteAsset from '../AssetComponent/deleteAsset';
-import '../App.css'
+import '../Page/App.css'
 
 
 const App_AssetList: React.FC = () => {

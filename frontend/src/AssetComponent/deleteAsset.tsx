@@ -1,7 +1,7 @@
 import React, { useState, FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { deleteAsset, fetchAssets } from '../redux/Asset/assetThunks';
-import Dialog from '../dialog';
+import Dialog from '../tools/dialog';
 import { useAppDispatch, useAppSelector } from '../redux/store'
 
 interface AssetFormProps {

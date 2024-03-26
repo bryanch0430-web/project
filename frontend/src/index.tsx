@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './Page/App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ErrorBoundary from './MainPage_component/error';
+import ErrorBoundary from './MainPageComponent/error';
 import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
-import PredictionComponent from './prediction'
+import PredictionComponent from './Page/prediction'
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

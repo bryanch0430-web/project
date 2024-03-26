@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../redux/store';
 import { fetchAssets } from '../redux/Asset/assetThunks';
 import AssetForm from '../AssetComponent/createNewAsset'
-import '../App.css'
+import '../Page/App.css'
 
 const App_AssetForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
