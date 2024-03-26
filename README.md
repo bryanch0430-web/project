@@ -37,11 +37,9 @@ A step by step series of examples that tell you how to get a development environ
    pip install -r requirements.txt
     ```
 6. Install PostgreSQL
-    ```sh
-    SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:A7589#aaa@localhost:5432/App'
-    ```
+  ```bash
   set the password to A7589#aaa and DataBase name = App
-
+   ```
 ## Usage
 
 How to run the project:
