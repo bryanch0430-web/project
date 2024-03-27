@@ -59,7 +59,46 @@ async def get_total_value(db: Session):
     return total_value
 
 
-async def get_asset_distribution(db: Session):
+async def get_assetlocation_distribution(db: Session):
+    try:
+        prices = await get_current_prices(db)
+        assets =  crud.get_all_assets(db)
+        total_value = 0.0
+        location_values = {}
+
+        for asset in assets:
+            price = next((price['current_price'] for price in prices if price['ticker'] == asset.asset_id), None)
+            if price is None:
+                continue
+
+            value = asset.quantity * price
+            total_value += value
+
+            if asset.location in location_values:
+                location_values[asset.location] += value
+            else:
+                location_values[asset.location] = value
+
+        distribution = {}
+        if total_value > 0:
+            for location, value in location_values.items():
+                distribution[location] = value / total_value
+
+        return schemas.AssetDistribution(asset_distribution=distribution)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+            
+def reshape_input(data, time_steps):
+    X = []
+
+    for i in range(len(data) - time_steps):
+        X.append(data[i:i + time_steps])
+
+    return np.array(X)
+
+
+async def get_assettype_distribution(db: Session):
     try:
         prices = await get_current_prices(db)
         assets =  crud.get_all_assets(db)
@@ -84,7 +123,6 @@ async def get_asset_distribution(db: Session):
             for asset_type, value in type_values.items():
                 distribution[asset_type] = value / total_value
 
-        # Assuming AssetDistribution is correctly a Pydantic model
         return schemas.AssetDistribution(asset_distribution=distribution)
 
     except Exception as e:
@@ -97,6 +135,7 @@ def reshape_input(data, time_steps):
         X.append(data[i:i + time_steps])
 
     return np.array(X)
+
 
 
 

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import PieChart from '../tools/pie';
 import { AssetDistribution } from '../tools/pie';
 import api from '../api';
 
-const AssetTypeDistribution: React.FC = () => {
+const AssetLocationDistribution: React.FC = () => {
   const [assetDistribution, setAssetDistribution] = useState<AssetDistribution>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,7 +12,7 @@ const AssetTypeDistribution: React.FC = () => {
     const fetchAssetDistribution = async () => {
       setIsLoading(true);
       try {
-        const response = await api.get('/asset_distribution_by_type/');
+        const response = await api.get('/asset_distribution_by_location/');
         setAssetDistribution(response.data.asset_distribution);
       } catch (err) {
         if (err instanceof Error) {
@@ -38,4 +37,4 @@ const AssetTypeDistribution: React.FC = () => {
   );
 };
 
-export default AssetTypeDistribution;
+export default AssetLocationDistribution;

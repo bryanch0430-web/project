@@ -9,6 +9,7 @@ import './App.css'
 import App_AssetList from '../MainPageComponent/App_AssetList';
 import Navbar from '../tools/nav_bar';
 import AssetTypeDistribution from '../MainPageComponent/Pie_Assettype';
+import AssetLocationDistribution from '../MainPageComponent/Pie_Location';
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { assets, loading, error } = useSelector((state: RootState) => state.asset);
@@ -16,11 +17,26 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <Navbar/>
+      <Navbar />
       <TotalValueDisplay></TotalValueDisplay>
       <App_AssetForm></App_AssetForm>
-      <App_AssetList></App_AssetList>
-      <AssetTypeDistribution></AssetTypeDistribution>
+      <div className="row">
+        <div className="col-sm-6">
+          <App_AssetList></App_AssetList>
+        </div>
+        <div className="col-sm-3">
+          <div className="border border-secondary p-2 rounded-3" style={{ width: '90%', margin: 'auto' }}>
+            <AssetTypeDistribution></AssetTypeDistribution>
+            <h5 className="d-flex justify-content-center align-items-center mt-3">Asset Type Distribution</h5>
+          </div>
+          </div>
+          <div className="col-sm-3">
+          <div className="border border-secondary p-2 rounded-3 " style={{ width: '90%' ,margin: 'auto' }}>
+            <AssetLocationDistribution></AssetLocationDistribution>
+            <h5 className="d-flex justify-content-center align-items-center mt-3">Asset Location Distribution</h5>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
