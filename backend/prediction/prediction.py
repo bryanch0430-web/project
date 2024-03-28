@@ -6,7 +6,7 @@ import ta
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
-from tensorflow.keras.layers import Input, Conv1D, MaxPooling1D, UpSampling1D, concatenate,Dense,  Embedding, MultiHeadAttention, Dropout, LayerNormalization
+from tensorflow.keras.layers import Input, Conv1D, MaxPooling1D, UpSampling1D, concatenate, Dense,Flatten, Conv2D, MaxPooling2D,Dropout,BatchNormalization
 from tensorflow.keras.models import Model
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,8 +16,22 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-from tensorflow.keras.layers import Dense, Embedding, MultiHeadAttention, Dropout, LayerNormalization
-from tensorflow.keras.models import Sequential
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 '''def TCNTimeSeries(input_shape, num_classes):
     inputs = Input(input_shape)
@@ -44,8 +58,70 @@ from tensorflow.keras.models import Sequential
     outputs = Dense(num_classes, activation='softmax')(flattened)
 
     model = Model(inputs=[inputs], outputs=[outputs])
-    return model'''
+    return model
+
+def LSTMTimeSeries(input_shape, num_classes):
+    model = Sequential()
+    model.add(LSTM(50, return_sequences=True, input_shape=input_shape))
+    model.add(LSTM(50, return_sequences=False))
+    model.add(Dense(25))
+    model.add(Dense(num_classes, activation='sigmoid'))
+    return model
+'''
+
+
+
+
+def inception_module_1d(x, filters):
+    # 1x1 conv
+    conv1 = Conv1D(filters=filters[0], kernel_size=1, activation='relu')(x)
     
+    # 3x3 conv
+    conv3 = Conv1D(filters=filters[1], kernel_size=1, activation='relu')(x)
+    conv3 = Conv1D(filters=filters[2], kernel_size=3, padding='same', activation='relu')(conv3)
+    
+    # 5x5 conv
+    conv5 = Conv1D(filters=filters[3], kernel_size=1, activation='relu')(x)
+    conv5 = Conv1D(filters=filters[4], kernel_size=5, padding='same', activation='relu')(conv5)
+    
+    # 3x3 max pooling
+    pool = MaxPooling1D(pool_size=3, strides=1, padding='same')(x)
+    pool = Conv1D(filters=filters[5], kernel_size=1, activation='relu')(pool)
+    
+    # Concatenate all
+    out = concatenate([conv1, conv3, conv5, pool], axis=-1)
+    
+    return out
+
+def GoogleNetTimeSeries(input_shape, num_classes):
+    input_layer = Input(shape=input_shape)
+    
+    # First convolution block
+    conv1 = Conv1D(filters=64, kernel_size=7, strides=2, padding='same', activation='relu')(input_layer)
+    pool1 = MaxPooling1D(pool_size=3, strides=2, padding='same')(conv1)
+    norm1 = BatchNormalization()(pool1)
+
+    # Second convolution block
+    conv2_reduce = Conv1D(filters=64, kernel_size=1, activation='relu')(norm1)
+    conv2 = Conv1D(filters=192, kernel_size=3, padding='same', activation='relu')(conv2_reduce)
+    norm2 = BatchNormalization()(conv2)
+    pool2 = MaxPooling1D(pool_size=3, strides=2)(norm2)
+
+    # Inception 3a
+    inception_3a_output = inception_module_1d(pool2, [64, 96, 128, 16, 32, 32])
+
+    # You can add more inception modules and max pooling layers here
+
+    # Flatten and output layer
+    flatten_layer = Flatten()(inception_3a_output)
+    output_layer = Dense(num_classes, activation='sigmoid')(flatten_layer)
+
+    model = Model(inputs=input_layer, outputs=output_layer)
+    return model
+
+
+
+
 def UNetTimeSeries(input_shape, num_classes):
     inputs = Input(input_shape)
 
@@ -97,7 +173,7 @@ def plot_distribution(y, dataset_name):
     plt.xticks(unique, classes) 
     plt.show()
 
-setTicker = "^GSPC"
+setTicker = "AAPL"
 # Fetch the data
 Ticker = yf.Ticker(setTicker)
 
@@ -184,12 +260,10 @@ plot_distribution(y_test, 'test')
 '''
 model = UNetTimeSeries((X_train.shape[1], X_train.shape[2]), 1)
 
-# Compile the model with binary_crossentropy for binary classification
 model.compile(optimizer='adam',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-# Define callbacks for early stopping, model checkpoint, and learning rate reduction
 early_stopping_callback = EarlyStopping(
     monitor='val_loss',
     patience=100,  
@@ -233,18 +307,21 @@ tf.keras.models.save_model(model, 'AAPLprediction_final.keras')
 final_model = tf.keras.models.load_model('AAPLprediction_final.keras')
 # Evaluate the final model
 final_predictions = final_model.predict(X_test)
-final_predicted_classes = (final_predictions > 0.5).astype(int)  # Use a threshold to classify as 0 or 1
+final_predicted_classes = (final_predictions > 0.5).astype(int)
 final_accuracy = accuracy_score(y_test, final_predicted_classes)
 
 # Load the best model
 best_model = tf.keras.models.load_model('AAPLprediction_best.keras')
 # Evaluate the best model
 best_predictions = best_model.predict(X_test)
-best_predicted_classes = (best_predictions > 0.5).astype(int)  # Use a threshold to classify as 0 or 1
+best_predicted_classes = (best_predictions > 0.5).astype(int) 
 best_accuracy = accuracy_score(y_test, best_predicted_classes)
 
 print(f"Final model accuracy: {final_accuracy}")
 print(f"Best model accuracy: {best_accuracy}")
+
+
+
 '''
 
 print(df)
@@ -353,3 +430,7 @@ df = df[[col for col in df.columns if col != 'Target'] + ['Target']]
 print(df.head())
  
 '''
+
+
+
+
