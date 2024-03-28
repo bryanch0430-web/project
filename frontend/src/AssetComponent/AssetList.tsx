@@ -13,9 +13,6 @@ interface TotalValues {
   [key: string]: number | undefined;
 }
 
-
-
-
 const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => {
   const [expandedAssets, setExpandedAssets] = useState<{ [key: string]: boolean }>({});
   const [totalValues, setTotalValues] = useState<TotalValues>({});
@@ -65,73 +62,76 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
 
   useEffect(() => {
     fetchAllTotalValues();
-  }, []); // Empty dependency array to call it only on component mount
+  
+    const intervalId = setInterval(() => {
+      fetchAllTotalValues();
+    }, 10000);
+  
+    return () => clearInterval(intervalId);
+  }, []); 
 
   return (
     <div>
       <link rel="stylesheet" href="/AssetList.css" />
-      <div className="container mt-3">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <h5>Asset List</h5>
-          <div>
-            <button className="btn btn-outline-primary btn-sm me-2" onClick={expandAll}>Show All</button>
-            <button className="btn btn-outline-secondary btn-sm" onClick={collapseAll}>Close All</button>
+      <div className="bg-light p-2 rounded-3">
+        <div className="container mt-3">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h5>Asset List</h5>
+            <div>
+              <button className="btn btn-outline-primary btn-sm me-2" onClick={expandAll}>
+                Show All
+              </button>
+              <button className="btn btn-outline-secondary btn-sm" onClick={collapseAll}>
+                Close All
+              </button>
+            </div>
           </div>
-        </div>
-        {Object.entries(groupedAssets).map(([idTypeKey, groupedAssetList]) => (
-          <div key={idTypeKey} className="card custom-asset-card mb-3">
-            <div className="card-header_" onClick={() => toggleAssetDetails(idTypeKey)}>
-              <div className="card-title">
-                <div className="d-flex justify-content-between">
-                  {/* Left-aligned item */}
-                  <div className="d-flex align-items-center">
-                    <span className="mx-2" >{groupedAssetList[0].asset_id}</span>
-                    <span>{groupedAssetList[0].asset_type}</span>
-                  </div>
+          {Object.entries(groupedAssets).map(([idTypeKey, groupedAssetList]) => (
+            <div key={idTypeKey} className="card custom-asset-card mb-3">
+              <div className="card-header_" onClick={() => toggleAssetDetails(idTypeKey)}>
+                <div className="card-title">
+                  <div className="d-flex justify-content-between">
+                    <div className="d-flex align-items-center">
+                      <span className="mx-2">{groupedAssetList[0].asset_id}</span>
+                      <span>{groupedAssetList[0].asset_type}</span>
+                    </div>
 
-                  <div className="d-flex align-items-center justify-content-end">
-                  <span className="mx-2" >
-                      {totalValues[groupedAssetList[0].asset_id] !== undefined
-                        ? `$${totalValues[groupedAssetList[0].asset_id]!.toFixed(2)}`
-                        : 'Loading...'}
-                    </span>
-                  
+                    <div className="d-flex align-items-center justify-content-end">
+                      <span className="mx-2">
+                        {totalValues[groupedAssetList[0].asset_id] !== undefined
+                          ? `$${totalValues[groupedAssetList[0].asset_id]!.toFixed(2)}`
+                          : 'Loading...'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {expandedAssets[idTypeKey] && (
-              <div className="card-body">
-                {groupedAssetList.map((asset, index) => (
-                  <div key={asset.id} className={`asset-item ${index > 0 ? 'mt-3' : ''}`}>
-                    <div className="asset-info">
-                      <p className="card-text">Location: {asset.location}</p>
-                      <p className="card-text">Quantity: {asset.quantity}</p>
+              {expandedAssets[idTypeKey] && (
+                <div className="card-body">
+                  {groupedAssetList.map((asset, index) => (
+                    <div key={asset.id} className={`asset-item ${index > 0 ? 'mt-3' : ''}`}>
+                      <div className="asset-info">
+                        <p className="card-text">Location: {asset.location}</p>
+                        <p className="card-text">Quantity: {asset.quantity}</p>
+                      </div>
+                      <div className="asset-actions">
+                        <button onClick={() => onEdit(asset)} className="btn btn-primary btn-sm me-2">
+                          Edit
+                        </button>
+                        <button onClick={() => onDelete(asset)} className="btn btn-danger btn-sm">
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                    <div className="asset-actions">
-                      <button
-                        onClick={() => onEdit(asset)}
-                        className="btn btn-primary btn-sm me-2"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => onDelete(asset)}
-                        className="btn btn-danger btn-sm"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )
-            }
-          </div>
-        ))}
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-    </div >
+    </div>
   );
 };
 

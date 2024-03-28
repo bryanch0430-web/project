@@ -11,7 +11,7 @@ const TotalValueDisplay: React.FC = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       dispatch(getTotalValue());
-    }, 15000); 
+    }, 10000); 
     dispatch(getTotalValue());
     return () => clearInterval(intervalId);
   }, [dispatch]);
