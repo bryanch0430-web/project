@@ -180,7 +180,12 @@ def predict_AAPL_updown(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     
-
+@app.get("/get_total_value_by_asset/")
+async def get_total_value_by_asset(db: Session = Depends(get_db)):
+    try:  
+        return await price.get_total_value_by_asset(db=db)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @app.get("/ticker_data/{ticker}")
 async def get_ticker_data(ticker: str):
@@ -201,3 +206,4 @@ async def get_asset_distribution_by_location(db: Session = Depends(get_db)):
         return await price.get_assetlocation_distribution(db=db)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    

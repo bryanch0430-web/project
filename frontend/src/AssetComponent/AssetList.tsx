@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { Asset } from '../redux/Asset/assetSlice';
 import './AssetList.css';
+import api from '../api';
 
 interface AssetsListProps {
   assets: Asset[];
@@ -10,6 +12,7 @@ interface AssetsListProps {
 
 const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => {
   const [expandedAssets, setExpandedAssets] = useState<{ [key: string]: boolean }>({});
+  const [totalValue, setTotalValue] = useState(null);
 
   const groupedAssets = assets.reduce((acc: { [key: string]: Asset[] }, asset) => {
     const idTypeKey = `${asset.asset_id}-${asset.asset_type}`;
@@ -40,8 +43,33 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
     }));
   };
 
+
+
+  const fetchTotalValue = async (asset_id: string) => {
+    try {
+      const totalValueResponse = await api.get(`/get_total_value_by_asset/${asset_id}/`);
+      return totalValueResponse.data.totalValue;
+    } catch (error) {
+      // Handle the error
+    }
+  };
+
+  useEffect(() => {
+    const fetchTotalValue = async () => {
+      try {
+        const totalValueResponse = await api.get(`/get_total_value_by_asset/`);
+        setTotalValue(totalValueResponse.data);
+        console.log(totalValueResponse.data);
+      } catch (error) {
+        // Handle the error
+      }
+    };
+    fetchTotalValue();
+  }, []);
+
+
   return (
-    <div>
+<div>
       <link rel="stylesheet" href="/AssetList.css" />
       <div className="container mt-3">
         <div className="d-flex justify-content-between align-items-center mb-3">
@@ -58,6 +86,7 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
             <div className="card-header_" onClick={() => toggleAssetDetails(idTypeKey)}>
               <div className="card-title">
                 <span className="d-inline-block mx-2">{groupedAssetList[0].asset_id}</span>
+
                 <span className="d-inline-block">{groupedAssetList[0].asset_type}</span>
               </div>
             </div>

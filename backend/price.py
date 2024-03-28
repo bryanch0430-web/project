@@ -44,6 +44,20 @@ async def get_current_prices(db: Session):
     return results
 
 
+async def get_total_value_by_asset(db: Session):
+    prices = await get_current_prices(db)
+    quantities = crud.get_total_quantity(db)
+    total_value = 0.0
+
+    asset_values = []
+    for price in prices:
+        if 'error' not in price:
+            asset_id = price['ticker']
+            quantity = quantities.get(asset_id, 0.0)
+            total_value = quantity * price['current_price']
+            asset_values.append({'asset_id': asset_id, 'total_value': total_value})
+    
+    return asset_values
 
 async def get_total_value(db: Session):
     prices = await get_current_prices(db)
