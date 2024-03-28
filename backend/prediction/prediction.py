@@ -67,7 +67,7 @@ def LSTMTimeSeries(input_shape, num_classes):
     model.add(Dense(25))
     model.add(Dense(num_classes, activation='sigmoid'))
     return model
-'''
+
 
 
 
@@ -119,6 +119,7 @@ def GoogleNetTimeSeries(input_shape, num_classes):
     model = Model(inputs=input_layer, outputs=output_layer)
     return model
 
+'''
 
 
 
@@ -184,7 +185,7 @@ del df["Dividends"]
 del df["Stock Splits"]
 
 print(df)
-window_size = 100
+window_size = 64
 classes = ['up','down']
 up_label = classes.index('up')
 down_label = classes.index('down')
@@ -300,19 +301,16 @@ history = model.fit(
 
 
 
-# Save the final model
+
 tf.keras.models.save_model(model, 'AAPLprediction_final.keras')
 
-# Load the final model
 final_model = tf.keras.models.load_model('AAPLprediction_final.keras')
-# Evaluate the final model
 final_predictions = final_model.predict(X_test)
 final_predicted_classes = (final_predictions > 0.5).astype(int)
 final_accuracy = accuracy_score(y_test, final_predicted_classes)
 
-# Load the best model
+
 best_model = tf.keras.models.load_model('AAPLprediction_best.keras')
-# Evaluate the best model
 best_predictions = best_model.predict(X_test)
 best_predicted_classes = (best_predictions > 0.5).astype(int) 
 best_accuracy = accuracy_score(y_test, best_predicted_classes)

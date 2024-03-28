@@ -17,7 +17,8 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
+      <div className="col-sm-12">
+      <Navbar /></div>
       <TotalValueDisplay></TotalValueDisplay>
       <App_AssetForm></App_AssetForm>
       <div className="row">
@@ -25,13 +26,13 @@ const App: React.FC = () => {
           <App_AssetList></App_AssetList>
         </div>
         <div className="col-sm-3">
-          <div className="border border-secondary p-2 rounded-3" style={{ width: '90%', margin: 'auto' }}>
+        <div className="bg-light p-2 rounded-3" style={{ width: '80%', margin: 'auto' }}>
             <AssetTypeDistribution></AssetTypeDistribution>
             <h5 className="d-flex justify-content-center align-items-center mt-3">Asset Type Distribution</h5>
           </div>
           </div>
           <div className="col-sm-3">
-          <div className="border border-secondary p-2 rounded-3 " style={{ width: '90%' ,margin: 'auto' }}>
+          <div className="bg-light p-2 rounded-3" style={{ width: '80%', margin: 'auto' }}>
             <AssetLocationDistribution></AssetLocationDistribution>
             <h5 className="d-flex justify-content-center align-items-center mt-3">Asset Location Distribution</h5>
           </div>
