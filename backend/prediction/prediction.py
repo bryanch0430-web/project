@@ -5,14 +5,19 @@ import yfinance as yf
 import ta
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import tensorflow as tf
-from tensorflow.keras.layers import Input, Conv1D, MaxPooling1D, UpSampling1D, concatenate,Dense
+from tensorflow.keras.layers import Input, Conv1D, MaxPooling1D, UpSampling1D, concatenate,Dense,  Embedding, MultiHeadAttention, Dropout, LayerNormalization
 from tensorflow.keras.models import Model
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 from tcn import TCN
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from tensorflow.keras.layers import Dense, Embedding, MultiHeadAttention, Dropout, LayerNormalization
+from tensorflow.keras.models import Sequential
 
 '''def TCNTimeSeries(input_shape, num_classes):
     inputs = Input(input_shape)
@@ -77,7 +82,7 @@ def UNetTimeSeries(input_shape, num_classes):
     flattened = tf.keras.layers.GlobalAveragePooling1D()(c4)
 
     # Output layer for sequence classification
-    outputs = Dense(num_classes, activation='softmax')(flattened)
+    outputs = Dense(num_classes, activation='sigmoid')(flattened)
 
     model = Model(inputs=[inputs], outputs=[outputs])
     return model
@@ -92,7 +97,7 @@ def plot_distribution(y, dataset_name):
     plt.xticks(unique, classes) 
     plt.show()
 
-setTicker = "AAPL"
+setTicker = "^GSPC"
 # Fetch the data
 Ticker = yf.Ticker(setTicker)
 
@@ -154,6 +159,18 @@ X_test_down = X_test_down[np.random.choice(len(X_test_down), minlen, replace=Fal
 X_test = np.vstack([X_test_up,X_test_down])
 y_test = np.array([up_label]*minlen+[down_label]*minlen)
 
+y_train_onehot = to_categorical(y_train)
+y_val_onehot = to_categorical(y_val)
+y_test_onehot = to_categorical(y_test)
+
+# Scaling the features
+scaler = StandardScaler()
+X_train_scaled = np.array([scaler.fit_transform(x) for x in X_train])
+X_val_scaled = np.array([scaler.transform(x) for x in X_val])
+X_test_scaled = np.array([scaler.transform(x) for x in X_test])
+
+np.random.seed(42)
+tf.random.set_seed(42)
 
 '''
 print("Training set shape:", X_train.shape)
@@ -165,36 +182,69 @@ plot_distribution(y_val, 'validation')
 plot_distribution(y_test, 'test')
 ])
 '''
-model = UNetTimeSeries((X_train.shape[1], X_train.shape[2]), len(classes))
+model = UNetTimeSeries((X_train.shape[1], X_train.shape[2]), 1)
 
+# Compile the model with binary_crossentropy for binary classification
 model.compile(optimizer='adam',
-              loss='categorical_crossentropy',  
+              loss='binary_crossentropy',
               metrics=['accuracy'])
 
-
-early_stopping_callback = tf.keras.callbacks.EarlyStopping(
+# Define callbacks for early stopping, model checkpoint, and learning rate reduction
+early_stopping_callback = EarlyStopping(
     monitor='val_loss',
     patience=100,  
     restore_best_weights=True
 )
 
+model_checkpoint_callback = ModelCheckpoint(
+    filepath='AAPLprediction_best.keras',
+    save_best_only=True,
+    monitor='val_loss',
+    verbose=1
+)
 
-model.fit(X_train,tf.keras.utils.to_categorical(y_train),
-          validation_data = (X_val,tf.keras.utils.to_categorical(y_val)), 
-          callbacks=[early_stopping_callback],
-          batch_size =2048,
-          epochs=1000)
+reduce_lr_callback = ReduceLROnPlateau(
+    monitor='val_loss',
+    factor=0.1,
+    patience=10,
+    verbose=1,
+    mode='auto',
+    min_delta=0.0001,
+    cooldown=0,
+    min_lr=0
+)
+
+# Fit the model
+history = model.fit(
+    X_train,
+    y_train,
+    validation_data=(X_val, y_val), 
+    callbacks=[early_stopping_callback, model_checkpoint_callback, reduce_lr_callback],
+    batch_size=2048,
+    epochs=1000
+)
 
 
-predictions = model.predict(X_test)
-predicted_classes = np.argmax(predictions, axis=1)  
-accuracy = accuracy_score(y_test, predicted_classes)  
 
-print(f"Model accuracy: {accuracy}")
+# Save the final model
+tf.keras.models.save_model(model, 'AAPLprediction_final.keras')
 
+# Load the final model
+final_model = tf.keras.models.load_model('AAPLprediction_final.keras')
+# Evaluate the final model
+final_predictions = final_model.predict(X_test)
+final_predicted_classes = (final_predictions > 0.5).astype(int)  # Use a threshold to classify as 0 or 1
+final_accuracy = accuracy_score(y_test, final_predicted_classes)
 
-# Save the model in the native Keras format
-tf.keras.models.save_model(model, 'AAPLprediction.keras')
+# Load the best model
+best_model = tf.keras.models.load_model('AAPLprediction_best.keras')
+# Evaluate the best model
+best_predictions = best_model.predict(X_test)
+best_predicted_classes = (best_predictions > 0.5).astype(int)  # Use a threshold to classify as 0 or 1
+best_accuracy = accuracy_score(y_test, best_predicted_classes)
+
+print(f"Final model accuracy: {final_accuracy}")
+print(f"Best model accuracy: {best_accuracy}")
 '''
 
 print(df)

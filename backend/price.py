@@ -172,6 +172,7 @@ def predict_AAPL_updown(db: Session):
 
     last_window = data_reshaped[-1].reshape(1, time_steps,5)
     prediction = APPL_model.predict(last_window)
+    #prediction = APPL_model.predict(last_window)[0, 0] //    if prediction > 0.5:
 
     if prediction.tolist() == [[1,0]]:
         a = 'up'
