@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Asset } from '../redux/Asset/assetSlice';
+import './AssetList.css';
 
 interface AssetsListProps {
   assets: Asset[];
@@ -8,78 +9,77 @@ interface AssetsListProps {
 }
 
 const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => {
-  const [sortColumn, setSortColumn] = useState<string>(''); // Track the current sorting column
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Track the current sorting order
+  const [expandedAssets, setExpandedAssets] = useState<{ [key: string]: boolean }>({});
 
-  const handleSort = (column: string) => {
-    if (sortColumn === column) {
-      // If the same column is clicked again, toggle the sorting order
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      // If a different column is clicked, set it as the new sorting column and default to ascending order
-      setSortColumn(column);
-      setSortOrder('asc');
+  const groupedAssets = assets.reduce((acc: { [key: string]: Asset[] }, asset) => {
+    const idTypeKey = `${asset.asset_id}-${asset.asset_type}`;
+    if (!acc[idTypeKey]) {
+      acc[idTypeKey] = [];
     }
+    acc[idTypeKey].push(asset);
+    return acc;
+  }, {});
+
+  const expandAll = () => {
+    const allExpanded = Object.keys(groupedAssets).reduce<{ [key: string]: boolean }>((acc, key) => {
+      acc[key] = true;
+      return acc;
+    }, {});
+    setExpandedAssets(allExpanded);
   };
 
-  const sortedAssets = [...assets].sort((a, b) => {
-    if (sortColumn === 'asset_id') {
-      return sortOrder === 'asc' ? a.asset_id.localeCompare(b.asset_id) : b.asset_id.localeCompare(a.asset_id);
-    } else if (sortColumn === 'asset_type') {
-      return sortOrder === 'asc' ? a.asset_type.localeCompare(b.asset_type) : b.asset_type.localeCompare(a.asset_type);
-    } else if (sortColumn === 'location') {
-      return sortOrder === 'asc' ? a.location.localeCompare(b.location) : b.location.localeCompare(a.location);
-    } else if (sortColumn === 'quantity') {
-      return sortOrder === 'asc' ? a.quantity - b.quantity : b.quantity - a.quantity;
-    } else {
-      // If no sorting column is selected, maintain the original order
-      return 0;
-    }
-  });
+
+  const collapseAll = () => {
+    setExpandedAssets({});
+  };
+
+  const toggleAssetDetails = (idTypeKey: string) => {
+    setExpandedAssets(prevState => ({
+      ...prevState,
+      [idTypeKey]: !prevState[idTypeKey]
+    }));
+  };
 
   return (
-    <div className="container mt-4">
-      <table className="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col" onClick={() => handleSort('asset_id')}>
-              ID {sortColumn === 'asset_id' && sortOrder === 'asc' && <i className="bi bi-caret-up-fill"></i>}
-              {sortColumn === 'asset_id' && sortOrder === 'desc' && <i className="bi bi-caret-down-fill"></i>}
-            </th>
-            <th scope="col" onClick={() => handleSort('asset_type')}>
-              Type {sortColumn === 'asset_type' && sortOrder === 'asc' && <i className="bi bi-caret-up-fill"></i>}
-              {sortColumn === 'asset_type' && sortOrder === 'desc' && <i className="bi bi-caret-down-fill"></i>}
-            </th>
-            <th scope="col" onClick={() => handleSort('location')}>
-              Location {sortColumn === 'location' && sortOrder === 'asc' && <i className="bi bi-caret-up-fill"></i>}
-              {sortColumn === 'location' && sortOrder === 'desc' && <i className="bi bi-caret-down-fill"></i>}
-            </th>
-            <th scope="col" onClick={() => handleSort('quantity')}>
-              Quantity {sortColumn === 'quantity' && sortOrder === 'asc' && <i className="bi bi-caret-up-fill"></i>}
-              {sortColumn === 'quantity' && sortOrder === 'desc' && <i className="bi bi-caret-down-fill"></i>}
-            </th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedAssets.map((asset) => (
-            <tr key={asset.id}>
-              <th scope="row">{asset.asset_id}</th>
-              <td>{asset.asset_type}</td>
-              <td>{asset.location}</td>
-              <td>{asset.quantity}</td>
-              <td>
-                <button className="btn btn-primary me-2" onClick={() => onEdit(asset)}>
-                  Update Quantity
-                </button>
-                <button className="btn btn-danger" onClick={() => onDelete(asset)}>
-                  Delete Asset
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <link rel="stylesheet" href="/AssetList.css" />
+      <div className="container mt-3">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h5> Asset List</h5>
+          <div>
+            <button className="btn btn-outline-primary btn-sm me-2" onClick={expandAll}>Show All</button>
+            <button className="btn btn-outline-secondary btn-sm" onClick={collapseAll}>Close All</button>
+          </div>
+        </div>
+        {Object.entries(groupedAssets).map(([idTypeKey, groupedAssetList]) => (
+
+
+          <div key={idTypeKey} className="card custom-asset-card mb-3">
+            <div className="card-header_" onClick={() => toggleAssetDetails(idTypeKey)}>
+              <div className="card-title">
+                <span className="d-inline-block mx-2">{groupedAssetList[0].asset_id}</span>
+                <span className="d-inline-block">{groupedAssetList[0].asset_type}</span>
+              </div>
+            </div>
+            {expandedAssets[idTypeKey] && (
+              <div className="card-body">
+                {groupedAssetList.map((asset, index) => (
+                  <div key={asset.id} className={`asset-item ${index > 0 ? 'mt-3' : ''}`}>
+                    <div className="asset-info">
+                      <p className="card-text">Location: {asset.location}</p>
+                      <p className="card-text">Quantity: {asset.quantity}</p>
+                    </div>
+                    <div className="asset-actions">
+                      <button className="btn btn-primary btn-sm" onClick={(e) => { e.stopPropagation(); onEdit(asset); }}>Edit</button>
+                      <button className="btn btn-danger btn-sm" onClick={(e) => { e.stopPropagation(); onDelete(asset); }}>Delete</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

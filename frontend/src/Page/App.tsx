@@ -10,6 +10,7 @@ import App_AssetList from '../MainPageComponent/App_AssetList';
 import Navbar from '../tools/nav_bar';
 import AssetTypeDistribution from '../MainPageComponent/Pie_Assettype';
 import AssetLocationDistribution from '../MainPageComponent/Pie_Location';
+
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { assets, loading, error } = useSelector((state: RootState) => state.asset);

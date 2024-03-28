@@ -1,0 +1,43 @@
+.custom-asset-card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-header_ {
+    cursor: pointer;
+    background-color: #c9ddf7; 
+    border-bottom: 2px solid #ddd; 
+  }
+  
+  .card-body {
+    padding: 0.5rem;
+  }
+  
+  .asset-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0; 
+  }
+  
+  .asset-item:not(:last-child) {
+    border-bottom: 1px solid #eee; 
+  }
+  
+  .asset-info {
+    flex-grow: 1; 
+    margin-right: 1rem; 
+  }
+  
+  .asset-actions {
+    display: flex;
+    align-items: center;
+  }
+  
+  .asset-actions button {
+    margin-right: 0.5rem;
+  }
+  
+  .asset-actions button:last-child {
+    margin-right: 0; 
+  }
+  
