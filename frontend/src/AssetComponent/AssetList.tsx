@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../api';
 import { Asset } from '../redux/Asset/assetSlice';
 import './AssetList.css';
-import api from '../api';
 
 interface AssetsListProps {
   assets: Asset[];
@@ -10,9 +9,16 @@ interface AssetsListProps {
   onDelete: (asset: Asset) => void;
 }
 
+interface TotalValues {
+  [key: string]: number | undefined;
+}
+
+
+
+
 const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => {
   const [expandedAssets, setExpandedAssets] = useState<{ [key: string]: boolean }>({});
-  const [totalValue, setTotalValue] = useState(null);
+  const [totalValues, setTotalValues] = useState<TotalValues>({});
 
   const groupedAssets = assets.reduce((acc: { [key: string]: Asset[] }, asset) => {
     const idTypeKey = `${asset.asset_id}-${asset.asset_type}`;
@@ -31,7 +37,6 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
     setExpandedAssets(allExpanded);
   };
 
-
   const collapseAll = () => {
     setExpandedAssets({});
   };
@@ -43,53 +48,59 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
     }));
   };
 
-
-
-  const fetchTotalValue = async (asset_id: string) => {
+  const fetchAllTotalValues = async () => {
     try {
-      const totalValueResponse = await api.get(`/get_total_value_by_asset/${asset_id}/`);
-      return totalValueResponse.data.totalValue;
+      const response = await api.get('/get_total_value_by_asset/'); // Adjust the API endpoint if necessary
+      const totalValuesData = response.data; // Make sure the data structure matches your actual API response
+      const totalValuesMap: TotalValues = totalValuesData.reduce((acc: TotalValues, currentValue: { asset_id: string; total_value: number }) => {
+        acc[currentValue.asset_id] = currentValue.total_value;
+        return acc;
+      }, {});
+      setTotalValues(totalValuesMap);
     } catch (error) {
-      // Handle the error
+      console.error('Error fetching total values:', error);
+      // Handle errors as appropriate for your application
     }
   };
 
   useEffect(() => {
-    const fetchTotalValue = async () => {
-      try {
-        const totalValueResponse = await api.get(`/get_total_value_by_asset/`);
-        setTotalValue(totalValueResponse.data);
-        console.log(totalValueResponse.data);
-      } catch (error) {
-        // Handle the error
-      }
-    };
-    fetchTotalValue();
-  }, []);
-
+    fetchAllTotalValues();
+  }, []); // Empty dependency array to call it only on component mount
 
   return (
-<div>
+    <div>
       <link rel="stylesheet" href="/AssetList.css" />
       <div className="container mt-3">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h5> Asset List</h5>
+          <h5>Asset List</h5>
           <div>
             <button className="btn btn-outline-primary btn-sm me-2" onClick={expandAll}>Show All</button>
             <button className="btn btn-outline-secondary btn-sm" onClick={collapseAll}>Close All</button>
           </div>
         </div>
         {Object.entries(groupedAssets).map(([idTypeKey, groupedAssetList]) => (
-
-
           <div key={idTypeKey} className="card custom-asset-card mb-3">
             <div className="card-header_" onClick={() => toggleAssetDetails(idTypeKey)}>
               <div className="card-title">
-                <span className="d-inline-block mx-2">{groupedAssetList[0].asset_id}</span>
+                <div className="d-flex justify-content-between">
+                  {/* Left-aligned item */}
+                  <div className="d-flex align-items-center">
+                    <span className="mx-2" >{groupedAssetList[0].asset_id}</span>
+                    <span>{groupedAssetList[0].asset_type}</span>
+                  </div>
 
-                <span className="d-inline-block">{groupedAssetList[0].asset_type}</span>
+                  <div className="d-flex align-items-center justify-content-end">
+                  <span className="mx-2" >
+                      {totalValues[groupedAssetList[0].asset_id] !== undefined
+                        ? `$${totalValues[groupedAssetList[0].asset_id]!.toFixed(2)}`
+                        : 'Loading...'}
+                    </span>
+                  
+                  </div>
+                </div>
               </div>
             </div>
+
             {expandedAssets[idTypeKey] && (
               <div className="card-body">
                 {groupedAssetList.map((asset, index) => (
@@ -99,17 +110,28 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
                       <p className="card-text">Quantity: {asset.quantity}</p>
                     </div>
                     <div className="asset-actions">
-                      <button className="btn btn-primary btn-sm" onClick={(e) => { e.stopPropagation(); onEdit(asset); }}>Edit</button>
-                      <button className="btn btn-danger btn-sm" onClick={(e) => { e.stopPropagation(); onDelete(asset); }}>Delete</button>
+                      <button
+                        onClick={() => onEdit(asset)}
+                        className="btn btn-primary btn-sm me-2"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => onDelete(asset)}
+                        className="btn btn-danger btn-sm"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
-            )}
+            )
+            }
           </div>
         ))}
       </div>
-    </div>
+    </div >
   );
 };
 
