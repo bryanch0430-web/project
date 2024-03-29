@@ -11,27 +11,31 @@ const App: React.FC = () => {
   return (
     <div>
       <div className="col-sm-12">
-      <Navbar /></div>
+        <Navbar /></div>
 
       <div className="row">
         <div className="col-sm-6">
-        <TotalValueDisplay></TotalValueDisplay> 
-        <App_AssetForm></App_AssetForm>
+          <TotalValueDisplay></TotalValueDisplay>
+          <App_AssetForm></App_AssetForm>
           <App_AssetList></App_AssetList>
         </div>
         <div className="col-sm-3 mt-2" >
-        <div className="bg-light p-2 rounded-3" style={{ width: '80%', margin: 'auto' }}>
-        <h5 className="d-flex justify-content-center align-items-center mt-3">Asset Type Distribution</h5>
+          <div className="bg-light p-2 rounded-3" style={{ width: '80%', margin: 'auto' }}>
+            <h5 className="d-flex justify-content-center align-items-center mt-3">Asset Type Distribution</h5>
             <AssetTypeDistribution></AssetTypeDistribution>
           </div>
-          </div>
-          <div className="col-sm-3 mt-2">
+          {/* other plot/function */}
+        </div>
+        <div className="col-sm-3 mt-2">
           <div className="bg-light p-2 rounded-3" style={{ width: '80%', margin: 'auto' }}>
-          <h5 className="d-flex justify-content-center align-items-center mt-3">Asset Location Distribution</h5>
+            <h5 className="d-flex justify-content-center align-items-center mt-3">Asset Location Distribution</h5>
             <AssetLocationDistribution></AssetLocationDistribution>
 
           </div>
+          {/* other plot/function  */}
         </div>
+
+
       </div>
     </div>
   );
