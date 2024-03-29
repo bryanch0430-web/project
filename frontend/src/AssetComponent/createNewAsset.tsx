@@ -3,7 +3,7 @@ import { createAssets } from '../redux/Asset/assetThunks';
 import { Asset } from '../redux/Asset/assetSlice';
 import { useAppDispatch } from '../redux/store';
 import Dialog from '../tools/dialog';
-
+import { fetchAssets } from '../redux/Asset/assetThunks';
 interface AssetFormProps {
   assets: Asset[];
   onClose: () => void;
@@ -50,6 +50,8 @@ const AssetForm: React.FC<AssetFormProps> = ({ onClose, nextId }) => {
     dispatch(createAssets(newAsset));
 
     onClose();
+    dispatch(fetchAssets());
+
   };
 
   return (

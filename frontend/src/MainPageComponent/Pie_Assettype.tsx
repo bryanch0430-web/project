@@ -10,6 +10,8 @@ const AssetTypeDistribution: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    
+
     const fetchAssetDistribution = async () => {
       setIsLoading(true);
       try {
@@ -17,15 +19,22 @@ const AssetTypeDistribution: React.FC = () => {
         setAssetDistribution(response.data.asset_distribution);
       } catch (err) {
         if (err instanceof Error) {
-            setError(err.message);
-         } 
+          setError(err.message);
+        } else {
+          setError('An unknown error occurred');
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchAssetDistribution();
+
+    const intervalId = setInterval(fetchAssetDistribution, 100000); 
+
+    return () => clearInterval(intervalId);
   }, []);
+
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error} and please input the correct asset</p>;

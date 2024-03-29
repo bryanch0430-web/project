@@ -20,6 +20,7 @@ import '../Page/App.css'
     }, [isAssetFormOpen]); 
     // Function to find the next id
     const getNextId = () => {
+      if(!assets.length) return 0;
       return assets.reduce((maxId, asset) => Math.max(maxId, parseInt(asset.id, 10)), 0) + 1;
     };
   

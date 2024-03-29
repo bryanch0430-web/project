@@ -24,6 +24,10 @@ const AssetLocationDistribution: React.FC = () => {
     };
 
     fetchAssetDistribution();
+
+    const intervalId = setInterval(fetchAssetDistribution, 100000); 
+
+    return () => clearInterval(intervalId);
   }, []);
 
   if (isLoading) return <p>Loading...</p>;
