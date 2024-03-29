@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../api';
 import { Asset } from '../redux/Asset/assetSlice';
 import './AssetList.css';
+import { fetchAssets } from '../redux/Asset/assetThunks';
 
 interface AssetsListProps {
   assets: Asset[];
@@ -54,6 +55,7 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
         return acc;
       }, {});
       setTotalValues(totalValuesMap);
+      fetchAssets();
     } catch (error) {
       console.error('Error fetching total values:', error);
     }
@@ -67,7 +69,10 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
     }, 10000);
   
     return () => clearInterval(intervalId);
+
   }, []);
+
+
 
   const sortAssetsByTotalValue = (a: [string, Asset[]], b: [string, Asset[]]): number => {
     const assetsA = a[1];
