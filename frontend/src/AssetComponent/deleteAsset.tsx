@@ -13,8 +13,9 @@ const DeleteAsset: FC<AssetFormProps> = ({ id, onClose }) => {
 
   const handleDelete = () => {
     dispatch(deleteAsset(id));
-    dispatch(fetchAssets());
     onClose();
+    dispatch(fetchAssets());//refresh the asset list
+    
   };
 
   const handleCancel = () => {

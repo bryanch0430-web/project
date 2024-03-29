@@ -6,6 +6,7 @@ export interface Asset {
     asset_id: string;
     asset_type: string;
     location: string;
+    description: string;  
     quantity: number;
     cost_price: number;
   }

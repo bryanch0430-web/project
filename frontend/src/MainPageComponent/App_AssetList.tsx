@@ -51,11 +51,16 @@ const App_AssetList: React.FC = () => {
     setSelectedAsset(null);
   };
 
+  const getNextId = () => {
+    if(!assets.length) return 0;
+    return assets.reduce((maxId, asset) => Math.max(maxId, parseInt(asset.id, 10)), 0) + 1;
+  };
+
 
   return (
     <div>
       {isAssetFormOpen && (
-        <AssetForm assets={assets} onClose={closeAssetForm} />
+        <AssetForm assets={assets} onClose={closeAssetForm} nextId={getNextId()} />
       )}
       <AssetsList assets={assets} onEdit={handleEditAsset} onDelete={handleDeleteClick} />
       {selectedAsset && (

@@ -1,6 +1,6 @@
 import React, { useState, FC } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateAsset } from '../redux/Asset/assetThunks';
+import { fetchAssets, updateAsset } from '../redux/Asset/assetThunks';
 import Dialog from '../tools/dialog';
 import { useAppDispatch, useAppSelector } from '../redux/store'
 
@@ -14,14 +14,15 @@ const Quantity: FC<AssetFormProps> = ({ id, currentQuantity, onClose }) => {
   const [quantity, setQuantity] = useState(currentQuantity.toString());
   const dispatch = useAppDispatch();
 
-  const isModalOpen = true; // Replace with actual logic to control modal visibility
-
+  const isModalOpen = true; 
+  
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const quantityNum = parseFloat(quantity);
     if (!isNaN(quantityNum) && quantityNum >= 0) {
       dispatch(updateAsset({ id: id, quantity: quantityNum }));
-      onClose(); // Close the modal after dispatch
+      onClose(); 
+      dispatch(fetchAssets())//refresh the asset list
     } else {
       alert("Please enter a valid quantity");
     }

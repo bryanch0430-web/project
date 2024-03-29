@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../redux/store';
-import { fetchAssets } from '../redux/Asset/assetThunks';
-import { Asset } from '../redux/Asset/assetSlice';
-import TotalValueDisplay from '../MainPageComponent/TotalValueDisplay';
-import App_AssetForm from '../MainPageComponent/App_AssetForm';
 import './App.css'
-import App_AssetList from '../MainPageComponent/App_AssetList';
-import Navbar from '../tools/nav_bar';
-import AssetTypeDistribution from '../MainPageComponent/Pie_Assettype';
-import AssetLocationDistribution from '../MainPageComponent/Pie_Location';
+import TotalValueDisplay from '../MainPageComponent/TotalValueDisplay'; //Total Portfolio Value
+import App_AssetForm from '../MainPageComponent/App_AssetForm'; //Create New Asset  
+import App_AssetList from '../MainPageComponent/App_AssetList'; //Asset List =>AssetList.tsx, UpdateQuantity.tsx & DeleteAsset.tsx  
+import Navbar from '../tools/nav_bar'; // Navigation Bar  
+import AssetTypeDistribution from '../MainPageComponent/Pie_Assettype';// pie chart Asset Type Distribution
+import AssetLocationDistribution from '../MainPageComponent/Pie_Location'; // pie chart Asset Location Distribution 
 
 const App: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { assets, loading, error } = useSelector((state: RootState) => state.asset);
-
-
   return (
     <div>
       <div className="col-sm-12">
@@ -23,7 +15,7 @@ const App: React.FC = () => {
 
       <div className="row">
         <div className="col-sm-6">
-        <TotalValueDisplay></TotalValueDisplay>
+        <TotalValueDisplay></TotalValueDisplay> 
         <App_AssetForm></App_AssetForm>
           <App_AssetList></App_AssetList>
         </div>

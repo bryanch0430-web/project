@@ -24,7 +24,7 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
     }
     acc[idTypeKey].push(asset);
     return acc;
-  }, {});
+  }, {}); 
 
   const expandAll = () => {
     const allExpanded = Object.keys(groupedAssets).reduce<{ [key: string]: boolean }>((acc, key) => {
@@ -47,8 +47,8 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
 
   const fetchAllTotalValues = async () => {
     try {
-      const response = await api.get('/get_total_value_by_asset/'); // Adjust the API endpoint if necessary
-      const totalValuesData = response.data; // Make sure the data structure matches your actual API response
+      const response = await api.get('/get_total_value_by_asset/');
+      const totalValuesData = response.data;
       const totalValuesMap: TotalValues = totalValuesData.reduce((acc: TotalValues, currentValue: { asset_id: string; total_value: number }) => {
         acc[currentValue.asset_id] = currentValue.total_value;
         return acc;
@@ -56,7 +56,6 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
       setTotalValues(totalValuesMap);
     } catch (error) {
       console.error('Error fetching total values:', error);
-      // Handle errors as appropriate for your application
     }
   };
 
@@ -68,11 +67,21 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
     }, 10000);
   
     return () => clearInterval(intervalId);
-  }, []); 
+  }, []);
+
+  const sortAssetsByTotalValue = (a: [string, Asset[]], b: [string, Asset[]]): number => {
+    const assetsA = a[1];
+    const assetsB = b[1];
+    const totalValueA = assetsA.reduce((sum, asset) => sum += totalValues[asset.asset_id] || 0, 0);
+    const totalValueB = assetsB.reduce((sum, asset) => sum += totalValues[asset.asset_id] || 0, 0);
+
+    return totalValueB - totalValueA;
+  };
+
+  const orderedGroupedAssets = Object.entries(groupedAssets).sort(sortAssetsByTotalValue);
 
   return (
     <div>
-      <link rel="stylesheet" href="/AssetList.css" />
       <div className="bg-light p-2 rounded-3">
         <div className="container mt-3">
           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -86,16 +95,14 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
               </button>
             </div>
           </div>
-          {Object.entries(groupedAssets).map(([idTypeKey, groupedAssetList]) => (
-            <div key={idTypeKey} className="card custom-asset-card mb-3">
+          {orderedGroupedAssets.map(([idTypeKey, groupedAssetList]) => (
+            <div key={idTypeKey} className="custom-asset-card mb-3">
               <div className="card-header_" onClick={() => toggleAssetDetails(idTypeKey)}>
                 <div className="card-title">
                   <div className="d-flex justify-content-between">
                     <div className="d-flex align-items-center">
-                      <span className="mx-2">{groupedAssetList[0].asset_id}</span>
-                      <span>{groupedAssetList[0].asset_type}</span>
+                      <b className="mx-2">{groupedAssetList[0].asset_id}</b>
                     </div>
-
                     <div className="d-flex align-items-center justify-content-end">
                       <span className="mx-2">
                         {totalValues[groupedAssetList[0].asset_id] !== undefined
@@ -106,25 +113,45 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
                   </div>
                 </div>
               </div>
-
+              {/*  The following code block is a ternary operator that checks if that asset is expanded or not. And the table is show the Asset's Location with its Quantity*/}
               {expandedAssets[idTypeKey] && (
                 <div className="card-body">
-                  {groupedAssetList.map((asset, index) => (
-                    <div key={asset.id} className={`asset-item ${index > 0 ? 'mt-3' : ''}`}>
-                      <div className="asset-info">
-                        <p className="card-text">Location: {asset.location}</p>
-                        <p className="card-text">Quantity: {asset.quantity}</p>
-                      </div>
-                      <div className="asset-actions">
-                        <button onClick={() => onEdit(asset)} className="btn btn-primary btn-sm me-2">
-                          Edit
-                        </button>
-                        <button onClick={() => onDelete(asset)} className="btn btn-danger btn-sm">
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                  <span className="mx-2">{groupedAssetList[0].asset_type}</span>
+                  <table className="table mt-2">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {groupedAssetList.map((asset, index) => (
+                        <tr key={asset.asset_id + "-" + index}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{asset.location}</td>
+                          <td>
+                          {asset.quantity}
+                          </td>
+                          <td>
+                            <button
+                              className="btn btn-primary btn-sm mx-1"
+                              onClick={() => onEdit(asset)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="btn btn-danger btn-sm mx-1"
+                              onClick={() => onDelete(asset)}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
             </div>
