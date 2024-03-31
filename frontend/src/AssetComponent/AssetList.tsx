@@ -17,7 +17,7 @@ interface TotalValues {
 const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => {
   const [expandedAssets, setExpandedAssets] = useState<{ [key: string]: boolean }>({});
   const [totalValues, setTotalValues] = useState<TotalValues>({});
-
+  
   const groupedAssets = assets.reduce((acc: { [key: string]: Asset[] }, asset) => {
     const idTypeKey = `${asset.asset_id}-${asset.asset_type}`;
     if (!acc[idTypeKey]) {
@@ -73,17 +73,15 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
   }, []);
 
 
-
   const sortAssetsByTotalValue = (a: [string, Asset[]], b: [string, Asset[]]): number => {
-    const assetsA = a[1];
-    const assetsB = b[1];
-    const totalValueA = assetsA.reduce((sum, asset) => sum += totalValues[asset.asset_id] || 0, 0);
-    const totalValueB = assetsB.reduce((sum, asset) => sum += totalValues[asset.asset_id] || 0, 0);
-
+    const totalValueA = (totalValues[a[1][0]?.asset_id] ?? 0) /a[1].length;
+    const totalValueB = (totalValues[b[1][0]?.asset_id] ?? 0) /b[1].length;
+  
     return totalValueB - totalValueA;
   };
 
   const orderedGroupedAssets = Object.entries(groupedAssets).sort(sortAssetsByTotalValue);
+  console.log('Sorted Assets:', orderedGroupedAssets);
 
   return (
     <div>
