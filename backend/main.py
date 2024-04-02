@@ -206,3 +206,6 @@ async def get_asset_distribution_by_location(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     
+@app.get("/historical_values/", response_model=list[schemas.PortfolioValueSchema])
+async def get_historical_values(db: Session = Depends(get_db)):
+    return db.query(models.PortfolioValue).all()

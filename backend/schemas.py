@@ -59,3 +59,10 @@ class TickerData(BaseModel):
 
 class AssetDistribution(BaseModel):
     asset_distribution: dict
+    
+class PortfolioValueSchema(BaseModel):
+    timestamp: datetime
+    total_value: float
+
+    class Config:
+        orm_mode = True

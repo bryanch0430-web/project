@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base 
+from datetime import datetime
 
 class AssetIndex(Base):
     __tablename__ = "asset_index"
@@ -31,7 +32,12 @@ class Prediction(Base):
     trend = Column(String)
     
     
-
+class PortfolioValue(Base):
+    __tablename__ = "portfolio_values"
+    timestamp = Column(DateTime, primary_key=True, index=True, default=datetime.utcnow)
+    total_value = Column(Float)
+    
+    
 #Asset
 #primary_key |unique     |nullable 
 # id         |asset_id   |asset_type
