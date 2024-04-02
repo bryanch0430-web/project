@@ -74,8 +74,8 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
 
 
   const sortAssetsByTotalValue = (a: [string, Asset[]], b: [string, Asset[]]): number => {
-    const totalValueA = (totalValues[a[1][0]?.asset_id] ?? 0) /a[1].length;
-    const totalValueB = (totalValues[b[1][0]?.asset_id] ?? 0) /b[1].length;
+    const totalValueA = (totalValues[a[1][0]?.asset_id] ?? 0) ;
+    const totalValueB = (totalValues[b[1][0]?.asset_id] ?? 0);
   
     return totalValueB - totalValueA;
   };
