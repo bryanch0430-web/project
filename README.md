@@ -1,8 +1,6 @@
 # Asset management & Simple prediction
 This platform enables users to integrate their assets, providing a comprehensive view of their total asset value and quantity. It is designed to simplify asset management by allowing users to easily track where their assets are stored. Additionally, the platform offers basic predictions on whether stocks, such as AAPL, will close higher or lower the following day. These forecasts are intended solely for user reference.
 
-Currently work on a Crypto Price prediction
-
 ### Prerequisites
 
 What things you need to install the software and how to install them:
@@ -58,3 +56,20 @@ How to run the project:
    ```sh
     yarn start 
     ```
+How to run the crypto prediction:
+
+1. Navigate to the backend directory:
+   ```sh
+    cd backend
+    ```
+2. Navigate to the prediction directory:
+   ```sh
+   cd prediction
+    ```
+3. Start the script
+      ```sh
+   python Crypto.py 
+    ```
+
+- BTC and ETH prediction perform the worst
+- ENS, BNB and SOL perform the best (r2 score > 0.9)
