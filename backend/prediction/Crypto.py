@@ -10,6 +10,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense,Dropout
 from tensorflow.keras.optimizers import Adam
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
 
 class BayesianLSTM(Sequential):
     def __init__(self, units, output_size, features, dropout_rate=0.5):
@@ -24,7 +25,7 @@ class BayesianLSTM(Sequential):
         predictions = [self(x, training=True) for _ in range(n_samples)]
         return np.array(predictions)
 
-setTicker = ['BTC-USD', 'ETH-USD', 'BNB-USD', 'SOL-USD', 'MSTR']
+setTicker = ['ENS-USD', 'BNB-USD', 'SOL-USD', 'MSTR','BTC-USD', 'ETH-USD']
 
 # Define the function to plot results for a single ticker
 def plot_ticker_results(y_test, predictions, ticker):
@@ -47,6 +48,7 @@ def plot_ticker_results(y_test, predictions, ticker):
 
 dataframes = [] 
 
+#process each ticker by downloading the data, calculating the indicators, and storing the data in a list
 for ticker in setTicker:
     df = yf.download(ticker, start="2020-01-01", end="2023-12-31")
     df = df.dropna()
@@ -61,7 +63,7 @@ for ticker in setTicker:
     df['Ticker'] = ticker
     dataframes.append(df)
 
-
+# process each ticker by training the model and making predictions
 for ticker_df in dataframes:
     ticker = ticker_df['Ticker'].iloc[0]
     print(f"Processing {ticker}")
@@ -105,5 +107,11 @@ for ticker_df in dataframes:
 
     lower_bound = mean_predictions - std_predictions
     upper_bound = mean_predictions + std_predictions
-
+# show the results
     plot_ticker_results(y_test, predictions, ticker)
+
+    r2 = r2_score(y_test, mean_predictions)
+    print(f"R-squared (R²): {r2}")
+
+    rmse = np.sqrt(mean_squared_error(y_test, mean_predictions))
+    print(f"Root Mean Squared Error (RMSE): {rmse}")
