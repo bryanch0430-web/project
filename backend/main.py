@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from typing import List,Annotated
 from starlette.middleware.cors import CORSMiddleware
 import crud, schemas, models, database, price
-
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 app = FastAPI()
 
@@ -209,3 +210,17 @@ async def get_asset_distribution_by_location(db: Session = Depends(get_db)):
 @app.get("/historical_values/", response_model=list[schemas.PortfolioValueSchema])
 async def get_historical_values(db: Session = Depends(get_db)):
     return db.query(models.PortfolioValue).all()
+
+
+
+scheduler = AsyncIOScheduler()
+
+
+scheduler.add_job(func=price.save_total_value,
+    trigger=CronTrigger(hour='0,12'),
+    args=(next(get_db()),),
+    misfire_grace_time=120)
+
+@app.on_event("startup")
+async def start_scheduler():
+    scheduler.start()

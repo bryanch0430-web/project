@@ -30,32 +30,34 @@ const PredictionComponent = () => {
   return (
     <div>
       <Navbar></Navbar>
-      <h3 className="d-flex justify-content-center mt-5 mb-3">Short Term Closing Price Chart of {ticker}</h3>
-      <div className="d-flex justify-content-center mt-4 mb-3">
-        <ChartComponent ticker={ticker} />
-      </div>
-      {loading && (
-        <div className="d-flex justify-content-center mt-3 mb-3">
-          <div>Loading prediction...</div>
+      <div className="container-fluid">
+        
+        <div className="d-flex justify-content-center mt-2 mb-3" style={{ width: '90%', margin: 'auto' }}>
+          <ChartComponent ticker={ticker} />
         </div>
-      )}
-      {error && (
-        <div className="d-flex justify-content-center mt-3 mb-3">
-          <div>Error: {error}</div>
+        {loading && (
+          <div className="d-flex justify-content-center mt-2 mb-3">
+            <div>Loading prediction...</div>
+          </div>
+        )}
+        {error && (
+          <div className="d-flex justify-content-center mt-2 mb-3">
+            <div>Error: {error}</div>
+          </div>
+        )}
+        {prediction && (
+          <div className="d-flex justify-content-center mt-2 mb-3">
+            <div>Prediction Trend: {prediction}</div>
+          </div>
+        )}
+        <div className="d-flex justify-content-center mt-2 mb-3">
+          <button className="btn btn-outline-secondary my-3" onClick={fetchPrediction} disabled={loading}>
+            Predict Trend
+          </button>
         </div>
-      )}
-      {prediction && (
-        <div className="d-flex justify-content-center mt-3 mb-3">
-          <div>Prediction Trend: {prediction}</div>
-        </div>
-      )}
-      <div className="d-flex justify-content-center mt-3 mb-3">
-        <button className="btn btn-outline-secondary my-3" onClick={fetchPrediction} disabled={loading}>
-          Predict Trend
-        </button>
       </div>
     </div>
-    );
+  );
 };
 
 export default PredictionComponent;

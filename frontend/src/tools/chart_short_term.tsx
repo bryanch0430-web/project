@@ -88,29 +88,34 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ ticker }) => {
 
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100%', 
-    }}>
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p>Error: {error}</p>
-      ) : (
-        chartData && (
-          <div style={{
-            width: '1000px',
-            height: '700px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <Line data={chartData} options={{ responsive: true }} />
-          </div>
-        )
-        )}
+    <div className="col-sm-12 mt-2 mb-2" >
+      <div className="bg-light p-2 rounded-3" style={{ width: '70%', margin: 'auto' }}>
+        <h4 className="d-flex justify-content-center ">Short Term Closing Price Chart of {ticker}</h4>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+        }}>
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>Error: {error}</p>
+          ) : (
+            chartData && (
+              <div style={{
+                width: '1000px',
+                height: '700px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <Line data={chartData} options={{ responsive: true }} />
+              </div>
+            )
+          )}
+        </div>
+      </div>
     </div>
   );
 };

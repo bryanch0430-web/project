@@ -202,3 +202,9 @@ def predict_AAPL_updown(db: Session):
     return a
 
 
+async def save_total_value(db: Session):
+    current_time = datetime.now()  # Capture the current datetime
+    total_value = await get_total_value(db=db)
+    portfolio_value = models.PortfolioValue(timestamp=current_time, total_value=total_value)
+    db.add(portfolio_value)
+    db.commit()
