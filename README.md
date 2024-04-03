@@ -56,7 +56,7 @@ How to run the project:
    ```sh
     yarn start 
     ```
-How to run the crypto prediction:
+How to run the crypto prediction (train and test):
 
 1. Navigate to the backend directory:
    ```sh
@@ -71,5 +71,7 @@ How to run the crypto prediction:
    python Crypto.py 
     ```
 
-- BTC and ETH prediction perform the worst
-- ENS, BNB and SOL perform the best (r2 score > 0.9)
+- BTC and ETH prediction perform the worst (It may need change the start date for improving the dataset)
+- ENS, BNB and SOL prediction perform the best (r2 score > 0.9)
+- The Bayesian LSTM is particularly suited to the task that data is noisy, and an understanding of prediction uncertainty can guide better decision-making.
+
