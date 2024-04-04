@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Request, Query
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Query, File, UploadFile, status
+
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
@@ -8,6 +9,8 @@ from starlette.middleware.cors import CORSMiddleware
 import crud, schemas, models, database, price
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
+import tempfile
+import os
 
 app = FastAPI()
 
@@ -36,6 +39,8 @@ db_dependency = Annotated[Session, Depends(get_db)]
 @app.on_event("startup")
 def on_startup():
     database.Base.metadata.create_all(bind=database.engine)
+
+
 
 #exception_handler
 @app.exception_handler(RequestValidationError)
@@ -224,3 +229,29 @@ scheduler.add_job(func=price.save_total_value,
 @app.on_event("startup")
 async def start_scheduler():
     scheduler.start()
+
+
+'''
+
+@app.post("/excel_to_db/")
+async def excel_to_db(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    if file.content_type not in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid file format.")
+
+    temp_file_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            contents = await file.read()
+            temp_file.write(contents)
+            temp_file_path = temp_file.name
+
+        result = await crud.excel_to_db(db=db, file=temp_file_path)
+        
+        return result
+    except Exception as e:
+
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    finally:
+        if temp_file_path and os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+            '''

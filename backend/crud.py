@@ -1,10 +1,46 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 import models, schemas
+import pandas as pd
+from fastapi.concurrency import run_in_threadpool
+import numpy as np
+from sqlalchemy.exc import IntegrityError
+'''
+def get_next_id(db: Session):
+    max_id_result = db.query(func.max(models.AssetIndex.id)).scalar()
+    return str(int(max_id_result) + 1) if max_id_result is not None else '1'
 
-class IndexNotFoundError(Exception):
-    pass
+async def excel_to_db(db: Session, file):
+    df = pd.read_excel(file)
 
+    if df.empty:
+        raise ValueError("The provided Excel file is empty.")
+
+    for _, row in df.iterrows():
+        description = row['description'] if pd.notnull(row['description']) else ''
+        cost_price = float(row['cost_price']) if pd.notnull(row['cost_price']) else 0.0
+
+        next_id = await run_in_threadpool(get_next_id, db)
+        
+        asset_index_create = schemas.AssetIndexCreate(
+            id=next_id,
+            asset_id=str(row['asset_id']),
+            asset_type=row['asset_type'],
+            description=description,
+            location=row['location'],
+            quantity=row['quantity'],
+            cost_price=cost_price
+        )
+
+        try:
+            # Assuming create_asset is a synchronous function that commits the new asset to the database
+            await run_in_threadpool(create_asset, asset_index_create, db)
+        except IntegrityError as e:
+            # Log the error, handle it, or skip the entry
+            print(f"IntegrityError occurred: {e}")  # Simple print for demonstration purposes
+
+    return df
+'''
 
 # AssetIndex
 def get_all_assets(db: Session):

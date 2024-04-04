@@ -15,9 +15,11 @@ const Navbar: React.FC = () => {
                     <a className="nav-link"  href="/">Home</a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="/predict-aapl">Prediction</a>
+                    <a className="nav-link" href="/predict-aapl">Trend-Predictor</a>
                   </li>
-    
+                  <li className="nav-item">
+                    <a className="nav-link" href="/predict-aapl">Price-Predictor</a>
+                  </li>
                 </ul>
               </div>
             </div>
