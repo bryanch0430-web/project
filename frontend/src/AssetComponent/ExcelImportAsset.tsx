@@ -71,23 +71,26 @@ const ExcelAssetForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                         required
                     />
                 </div>
+                <p className="mt-2">Download this excel template from git:
+
+
+                    <a
+                        href="https://github.com/bryanch0430-web/project/blob/cdd20394d59be9b61db05a57618b723e145309ab/Book1.xlsx"
+                        download="Book1.xlsx"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Template
+                    </a>
+                </p>
                 <div className="d-flex justify-content-center">
                     <button className="btn btn-success" type="submit" disabled={uploading}>
                         {uploading ? 'Uploading...' : 'Upload Excel File'}
                     </button>
                 </div>
-                <p  className="mt-2">Download this excel template from git:
-                
 
-                <a
-                    href="https://github.com/bryanch0430-web/project/blob/cdd20394d59be9b61db05a57618b723e145309ab/Book1.xlsx"
-                    download="Book1.xlsx"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Template
-                </a>
-                </p>
+                <p className='mt-1 mb-1'>* Asset ID is the ticker in yahoo finance</p>
+                <p className='mt-1 mb-1'>* Location is where the asset store in</p>
             </form>
         </Dialog>
     );
