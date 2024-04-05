@@ -75,3 +75,5 @@ How to run the crypto prediction (train and test):
 - ENS, BNB and SOL prediction perform the best (r2 score > 0.9)
 - The Bayesian LSTM is particularly suited to the task that data is noisy, and an understanding of prediction uncertainty can guide better decision-making.
 
+## Preview
+![image](https://github.com/bryanch0430-web/project/assets/129389913/15428bf6-a278-4a0e-9a1d-74cf445cfcd0)
