@@ -3,6 +3,7 @@ import api from '../api';
 import { Asset } from '../redux/Asset/assetSlice';
 import './AssetList.css';
 import { fetchAssets } from '../redux/Asset/assetThunks';
+import { useAppDispatch } from '../redux/store';
 
 interface AssetsListProps {
   assets: Asset[];
@@ -17,7 +18,8 @@ interface TotalValues {
 const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => {
   const [expandedAssets, setExpandedAssets] = useState<{ [key: string]: boolean }>({});
   const [totalValues, setTotalValues] = useState<TotalValues>({});
-  
+  const dispatch = useAppDispatch();
+
   const groupedAssets = assets.reduce((acc: { [key: string]: Asset[] }, asset) => {
     const idTypeKey = `${asset.asset_id}-${asset.asset_type}`;
     if (!acc[idTypeKey]) {
@@ -55,7 +57,7 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
         return acc;
       }, {});
       setTotalValues(totalValuesMap);
-      fetchAssets();
+      dispatch(fetchAssets());
     } catch (error) {
       console.error('Error fetching total values:', error);
     }
@@ -67,10 +69,17 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
     const intervalId = setInterval(() => {
       fetchAllTotalValues();
     }, 10000);
-  
+
     return () => clearInterval(intervalId);
 
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchAssets());
+  }, [totalValues]);
+
+
+
 
 
   const sortAssetsByTotalValue = (a: [string, Asset[]], b: [string, Asset[]]): number => {

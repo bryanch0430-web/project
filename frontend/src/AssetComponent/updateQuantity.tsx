@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchAssets, updateAsset } from '../redux/Asset/assetThunks';
 import Dialog from '../tools/dialog';
@@ -22,11 +22,16 @@ const Quantity: FC<AssetFormProps> = ({ id, currentQuantity, onClose }) => {
     if (!isNaN(quantityNum) && quantityNum >= 0) {
       dispatch(updateAsset({ id: id, quantity: quantityNum }));
       onClose(); 
-      dispatch(fetchAssets())//refresh the asset list
+      dispatch(fetchAssets());
+
     } else {
       alert("Please enter a valid quantity");
     }
   };
+
+  useEffect(() => {
+    dispatch(fetchAssets());
+  }, [quantity]);
 
   return (
     <Dialog isOpen={isModalOpen} onClose={onClose}>

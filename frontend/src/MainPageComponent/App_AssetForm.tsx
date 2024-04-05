@@ -39,7 +39,7 @@ const App_AssetForm: React.FC = () => {
 
   return (
     <div>
-      {/* Button to open the standard AssetForm */}
+
       <div className="d-flex justify-content-center mt-3 mb-3">
         <button className="btn btn-outline-secondary mx-2" onClick={openAssetForm}>
           Add New Asset
@@ -47,19 +47,17 @@ const App_AssetForm: React.FC = () => {
         {isAssetFormOpen && (
           <AssetForm assets={assets} onClose={closeAssetForm} nextId={getNextId()} />
         )}
-      </div>
-      {/* Button to open the ExcelAssetForm */}
-      <div className="d-flex justify-content-center mt-3 mb-3">
         <button className="btn btn-outline-secondary mx-2" onClick={openExcelAssetForm}>
           Add New Asset via Excel
-        </button>
+        </button>        
         {isExcelAssetFormOpen && (
-          <ExcelAssetForm />
+          <ExcelAssetForm closeForm={closeExcelAssetForm} />
         )}
+
       </div>
-      {/* Loading and Error Messages */}
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
+
+
+
     </div>
   );
 };

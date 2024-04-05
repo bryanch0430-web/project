@@ -28,9 +28,12 @@ const App_AssetList: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchAssets());
+  }, [assets]);
+
+
+  useEffect(() => {
+    dispatch(fetchAssets());
   }, [selectedAsset]);
-
-
 
   const handleDeleteClick = (asset: Asset) => {
     setModalType('DELETE');
