@@ -5,10 +5,14 @@ import pandas as pd
 from fastapi.concurrency import run_in_threadpool
 import numpy as np
 from sqlalchemy.exc import IntegrityError
-'''
-def get_next_id(db: Session):
-    max_id_result = db.query(func.max(models.AssetIndex.id)).scalar()
-    return str(int(max_id_result) + 1) if max_id_result is not None else '1'
+from sqlalchemy import cast, Integer
+from sqlalchemy.orm.exc import NoResultFound
+
+def get_next_id(db: Session) -> str:
+    max_id_result = db.query(func.max(cast(models.AssetIndex.id, Integer))).scalar()
+    next_id = int(max_id_result) + 1 if max_id_result is not None else 1
+
+    return str(next_id)
 
 async def excel_to_db(db: Session, file):
     df = pd.read_excel(file)
@@ -19,8 +23,12 @@ async def excel_to_db(db: Session, file):
     for _, row in df.iterrows():
         description = row['description'] if pd.notnull(row['description']) else ''
         cost_price = float(row['cost_price']) if pd.notnull(row['cost_price']) else 0.0
+        cost_price = float(row['quantity']) if pd.notnull(row['quantity']) else 0.0
 
         next_id = await run_in_threadpool(get_next_id, db)
+        
+        asset_dict = asset_index_create.dict()
+        asset_dict['id'] = next_id
         
         asset_index_create = schemas.AssetIndexCreate(
             id=next_id,
@@ -40,7 +48,6 @@ async def excel_to_db(db: Session, file):
             print(f"IntegrityError occurred: {e}")  # Simple print for demonstration purposes
 
     return df
-'''
 
 # AssetIndex
 def get_all_assets(db: Session):
@@ -56,13 +63,15 @@ def create_asset(asset_index_create: schemas.AssetIndexCreate, db: Session):
 def get_all_unique_asset_id(db: Session):
     return db.query(models.AssetIndex.asset_id).distinct().all()
 
+class IndexNotFoundError(Exception):
+    pass
+
 def get_asset(db: Session, id: str):
     db_asset = db.query(models.AssetIndex).filter(models.AssetIndex.id == id).first()
     if db_asset:
         return db_asset
     else:
         raise IndexNotFoundError(f"Asset with id {id} does not exist.")
-
 
 
 def delete_asset(db: Session, id: str):

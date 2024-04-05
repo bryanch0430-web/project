@@ -9,10 +9,10 @@ class AssetIndexBase(BaseModel):
     id: str
     asset_id: str
     asset_type: str
-    description:Optional[str]
+    description: Optional[str] = None
     location: str
     quantity: float
-    cost_price: Optional[float]
+    cost_price: Optional[float] = None
 
 
 class AssetQuantityUpdate(BaseModel):

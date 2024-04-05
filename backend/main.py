@@ -231,8 +231,6 @@ async def start_scheduler():
     scheduler.start()
 
 
-'''
-
 @app.post("/excel_to_db/")
 async def excel_to_db(file: UploadFile = File(...), db: Session = Depends(get_db)):
     if file.content_type not in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]:
@@ -254,4 +252,3 @@ async def excel_to_db(file: UploadFile = File(...), db: Session = Depends(get_db
     finally:
         if temp_file_path and os.path.exists(temp_file_path):
             os.remove(temp_file_path)
-            '''
