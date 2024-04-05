@@ -90,7 +90,6 @@ const AssetsList: React.FC<AssetsListProps> = ({ assets, onEdit, onDelete }) => 
   };
 
   const orderedGroupedAssets = Object.entries(groupedAssets).sort(sortAssetsByTotalValue);
-  console.log('Sorted Assets:', orderedGroupedAssets);
 
   return (
     <div>

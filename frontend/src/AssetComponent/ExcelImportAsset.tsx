@@ -35,7 +35,6 @@ const ExcelAssetForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                 }
             });
 
-            console.log(response.data);
             closeForm();
             setUploading(false);
         } catch (error) {
