@@ -76,12 +76,18 @@ const ExcelAssetForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
                         {uploading ? 'Uploading...' : 'Upload Excel File'}
                     </button>
                 </div>
-                {/*<a
-                    href="/Book1.xlsx"
+                <p  className="mt-2">Download this excel template from git:
+                
+
+                <a
+                    href="https://github.com/bryanch0430-web/project/blob/cdd20394d59be9b61db05a57618b723e145309ab/Book1.xlsx"
                     download="Book1.xlsx"
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
-                    Download Excel Template
-                </a>*/}
+                    Template
+                </a>
+                </p>
             </form>
         </Dialog>
     );
