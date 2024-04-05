@@ -6,10 +6,10 @@ from datetime import datetime
 class AssetIndex(Base):
     __tablename__ = "asset_index"
     id = Column(String, primary_key=True)
-    asset_id = Column(String, nullable=False)
-    asset_type = Column(String, nullable=False)
+    asset_id = Column(String, nullable=False, unique=True)
+    asset_type = Column(String, nullable=False, unique=True)
     description = Column(String)
-    location = Column(String, nullable=False)
+    location = Column(String, nullable=False, unique=True)
     quantity = Column(Float)
     cost_price = Column(Float)
     transactions = relationship("Transaction", back_populates="asset_index")

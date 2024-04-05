@@ -6,12 +6,14 @@ from fastapi.concurrency import run_in_threadpool
 import numpy as np
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import cast, Integer
-from sqlalchemy.orm.exc import NoResultFound
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
+# AssetIndex
 def get_next_id(db: Session) -> str:
     max_id_result = db.query(func.max(cast(models.AssetIndex.id, Integer))).scalar()
     next_id = int(max_id_result) + 1 if max_id_result is not None else 1
-
+    print(f"Next ID: {next_id}")
     return str(next_id)
 
 async def excel_to_db(db: Session, file):
@@ -19,37 +21,38 @@ async def excel_to_db(db: Session, file):
 
     if df.empty:
         raise ValueError("The provided Excel file is empty.")
+    df = df.where(pd.notnull(df), None)
 
-    for _, row in df.iterrows():
-        description = row['description'] if pd.notnull(row['description']) else ''
-        cost_price = float(row['cost_price']) if pd.notnull(row['cost_price']) else 0.0
-        cost_price = float(row['quantity']) if pd.notnull(row['quantity']) else 0.0
+    df = df.to_dict('records')
+
+    for row in df:
+        description = str(row['description']) if not pd.isna(row['description']) else ''
+        cost_price = row['cost_price'] if not pd.isna(row['cost_price']) else 0.0
+        quantity = row['quantity'] if not pd.isna(row['quantity']) else 0.0
 
         next_id = await run_in_threadpool(get_next_id, db)
         
-        asset_dict = asset_index_create.dict()
-        asset_dict['id'] = next_id
-        
         asset_index_create = schemas.AssetIndexCreate(
-            id=next_id,
+            id=str(next_id),
             asset_id=str(row['asset_id']),
-            asset_type=row['asset_type'],
+            asset_type=str(row['asset_type']),
             description=description,
-            location=row['location'],
-            quantity=row['quantity'],
+            location=str(row['location']),
+            quantity=quantity,
             cost_price=cost_price
         )
+        
+        print(asset_index_create.dict())  # Debug print statement
+        
 
         try:
-            # Assuming create_asset is a synchronous function that commits the new asset to the database
             await run_in_threadpool(create_asset, asset_index_create, db)
         except IntegrityError as e:
-            # Log the error, handle it, or skip the entry
-            print(f"IntegrityError occurred: {e}")  # Simple print for demonstration purposes
+            print(f"IntegrityError occurred: {e}")  
+    
+    return {"message": "Assets processed successfully."} #hard code it for now
 
-    return df
 
-# AssetIndex
 def get_all_assets(db: Session):
     return db.query(models.AssetIndex).all()
 
