@@ -76,4 +76,12 @@ How to run the crypto prediction (train and test):
 - The Bayesian LSTM is particularly suited to the task that data is noisy, and an understanding of prediction uncertainty can guide better decision-making.
 
 ## Preview
+### Asset Management Page
 ![image](https://github.com/bryanch0430-web/project/assets/129389913/15428bf6-a278-4a0e-9a1d-74cf445cfcd0)
+
+### Up/Down Prediction
+![image](https://github.com/bryanch0430-web/project/assets/129389913/e19b66ab-a3c1-4724-8681-e9af58f0c864)
+
+### Predicting Cryptocurrency Prices Using a Bayesian LSTM Model
+![image](https://github.com/bryanch0430-web/project/assets/129389913/cc29968f-61cd-4adf-a214-88163584b500)
+
