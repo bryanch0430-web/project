@@ -103,10 +103,9 @@ for ticker_df in dataframes:
     if len(y_test) > len(mean_predictions):
         y_test = y_test[-len(mean_predictions):]
 
-    assert len(y_test) == len(mean_predictions), "The length of y_test and mean_predictions must be the same"
+    assert len(y_test) == len(mean_predictions) #The length of y_test and mean_predictions must be the same
 
-    lower_bound = mean_predictions - std_predictions
-    upper_bound = mean_predictions + std_predictions
+
 # show the results
     plot_ticker_results(y_test, predictions, ticker)
 
