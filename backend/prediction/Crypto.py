@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense,Dropout
 from tensorflow.keras.optimizers import Adam
+import tensorflow as tf
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
 
@@ -25,7 +26,7 @@ class BayesianLSTM(Sequential):
         predictions = [self(x, training=True) for _ in range(n_samples)]
         return np.array(predictions)
 
-setTicker = ['ENS-USD', 'BNB-USD', 'SOL-USD', 'MSTR','BTC-USD', 'ETH-USD']
+setTicker = ['JASMY-USD','ENS-USD', 'BNB-USD', 'SOL-USD', 'MSTR','BTC-USD', 'ETH-USD']
 
 # Define the function to plot results for a single ticker
 def plot_ticker_results(y_test, predictions, ticker):
@@ -105,6 +106,8 @@ for ticker_df in dataframes:
 
     assert len(y_test) == len(mean_predictions) #The length of y_test and mean_predictions must be the same
 
+    if ticker == 'ENS-USD':
+        tf.keras.models.save_model(model, 'ENS.keras')
 
 # show the results
     plot_ticker_results(y_test, predictions, ticker)
