@@ -30,6 +30,10 @@ A step by step series of examples that tell you how to get a development environ
     ```
 4. Install project dependencies:
     ```sh
+    npm install
+    ```
+    or 
+    ```sh
     yarn install
     ```
 5. Install PostgreSQL
