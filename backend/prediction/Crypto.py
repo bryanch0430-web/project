@@ -105,9 +105,9 @@ for ticker_df in dataframes:
         y_test = y_test[-len(mean_predictions):]
 
     assert len(y_test) == len(mean_predictions) #The length of y_test and mean_predictions must be the same
-
-    if ticker == 'ENS-USD':
-        tf.keras.models.save_model(model, 'ENS.keras')
+    
+    
+    
 
 # show the results
     plot_ticker_results(y_test, predictions, ticker)
